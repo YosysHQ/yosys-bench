@@ -1,0 +1,9 @@
+add_*_*.v
+sub_*_*.v
+mul_*_*.v
+adds_*_*.v
+subs_*_*.v
+muls_*_*.v
+shl_*_*.v
+shr_*_*.v
+sshr_*_*.v

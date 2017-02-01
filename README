@@ -1,0 +1,21 @@
+
+This is a collection of Verilog designs of different type and size, used as
+benchmarks in Yosys development.
+
+Create a PR if you think you have an interesting benchmark.
+
+
+benchmarks_small
+----------------
+
+This directory contains small (mostly synthestic) benchmarks that can be used
+to analyse and compare the performace of the tools in specific situations.
+
+
+benchmarks_large
+----------------
+
+This directory contains larger "real-world" designs. They can be used for
+estimating the overall performance of the tools.
+
+
