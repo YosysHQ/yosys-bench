@@ -5,7 +5,7 @@
 //
 //
 
-module crc32 (input [7:0] din, input clk, input rst_n, output reg [31:0] dout);
+module crc32 (input [7:0] din, input clk, input rst_n, output [31:0] dout);
 
   reg [31:0] crctbl [255:0];
   reg [31:0] crc;
@@ -272,10 +272,10 @@ module crc32 (input [7:0] din, input clk, input rst_n, output reg [31:0] dout);
 
   always @(posedge clk)
   begin
-    if (rst_n = 1'b0)
+    if (rst_n == 1'b0)
       crc <= 32'hFFFFFFFF;
     else
-      crc <= (crc >> 8) xor crctbl[(crc[7:0] xor din)];    
+      crc <= (crc >> 8) ^ crctbl[(crc[7:0] ^ din)];    
   end
 
   assign dout = crc;
