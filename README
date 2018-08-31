@@ -18,4 +18,7 @@ benchmarks_large
 This directory contains larger "real-world" designs. They can be used for
 estimating the overall performance of the tools.
 
+running the benchmarks
+----------------------
 
+run './scripts/database_make.sh yosys-ice40-lutcount <directory1> <directory2>'

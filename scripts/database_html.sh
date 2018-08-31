@@ -1,7 +1,7 @@
 #!/bin/bash
 
 tables="$(cd database; ls -d */ | sed 's,/$,,;')"
-tests="$(cd database; ls */*.dat | sed 's,.*/,,; s,\.dat$,,;')"
+tests="$(cd database; ls */*.dat | sed 's,.*/,,; s,\.dat$,,;' | sort -n)"
 
 exec > database/index.html
 
