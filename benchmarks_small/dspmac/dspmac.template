@@ -1,0 +1,24 @@
+// DSP multiply-and-accumulate block without saturation
+// Niels A. Moseley
+
+module dspmac_<w>_<s>(
+    input clk, 
+    input rst_n, 
+    input signed [<w>-1:0] a_in, 
+    input signed [<w>-1:0] b_in, 
+    output signed [<s>-1:0] accu_out
+    );
+
+reg signed [<s>-1:0] accu;
+
+always @(posedge clk or negedge rst_n)
+begin
+    if (rst_n == 1'b0)
+        accu <= <s>'d0;  // set accumulator to zero
+    else
+        accu <= accu + a_in*b_in;
+end
+
+assign accu_out = accu;
+
+endmodule
