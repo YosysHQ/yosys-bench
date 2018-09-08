@@ -41,8 +41,8 @@ for arg; do
 		popd > /dev/null
 	fi
 	if test -d $arg; then
-		for f in ${arg%/}/*.v; do add_verilog_file ${f%.v}; echo "Adding1: ${f%}.v"; done
-		for f in ${arg%/}/*.vhdl; do add_vhdl_file ${f%.vhdl}; echo "Adding2: ${f%}.vhdl"; done
+		for f in ${arg%/}/*.v; do add_verilog_file ${f%.v}; echo "Adding1: ${f%.v}.v"; done
+		for f in ${arg%/}/*.vhdl; do add_vhdl_file ${f%.vhdl}; echo "Adding2: ${f} ${f%.vhdl}.vhdl"; done
 	elif test -e ${arg%.v}; then
         echo "Adding3: ${arg%.v}";
         add_verilog_file ${arg%.v};
