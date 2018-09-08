@@ -1,5 +1,5 @@
 // DSP multiply-and-accumulate block without saturation
-// Niels A. Moseley
+// Author: Niels A. Moseley
 
 module dspmac_<w>_<s>(
     input clk, 
