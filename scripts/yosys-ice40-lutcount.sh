@@ -1,4 +1,9 @@
 #!/bin/bash
+
+#
+# mode script for ICE40 FPGA LUT count
+#
+
 logfile=$( mktemp )
 topmodule=$( basename -s .v "$1" )
 scriptpath=$( pwd )
