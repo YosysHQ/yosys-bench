@@ -1,0 +1,35 @@
+// Synchronous RAM template file
+// Author: Niels A. Moseley
+//
+// Featuring pass-through-on-write logic
+//
+
+module syncram_<w>_<s> (
+    clk,
+    cs,         // active-high chip select
+    we,         // active-high write enable
+    addr_in,
+    data_in,
+    data_out    
+);
+
+input clk,cs,we;
+input [<w>-1:0] addr_in;
+input [<s>-1:0] data_in;
+output reg [<s>-1:0] data_out;
+
+reg [<s>-1:0] mem [0:<w>-1];
+
+always @(posedge clk)
+begin
+    if (cs == 1'b1) begin
+        if (we) begin
+            data_out <= data_in;    // pass-through data at input to output during write operations
+            mem[addr_in] <= data_in;
+        end else begin
+            data_out <= mem[addr_in];
+        end // write enable
+    end // chip select
+end
+
+endmodule
