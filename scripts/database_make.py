@@ -9,6 +9,10 @@ if (len(sys.argv) < 3):
     print("Usage: database_make <mode> <dir1> .. <dirN>")
     sys.exit(1);
 
+dbpath = os.path.abspath("./database/"+sys.argv[1]);
+
+os.system("rm -rf "+dbpath);
+os.system("mkdir -p "+dbpath);
 
 # call all generate.py scripts
 for dir in sys.argv[2:]:
@@ -31,7 +35,7 @@ for dir in sys.argv[2:]:
             if (file.endswith(".v")):
                 verilogsrc = os.path.join(dir, file)
                 filewithoutext, file_extension = os.path.splitext(file)
-                datfile = open(os.path.join(dir, filewithoutext + ".dat"), "wt")
+                datfile = open(os.path.join(dbpath, filewithoutext + ".dat"), "wt")
                 print("  Running Verilog file " + file);
                 retval = subprocess.check_call([os.path.abspath("./scripts/"+sys.argv[1]+".sh"),os.path.abspath("./" +verilogsrc)],
                                                cwd=os.path.abspath("./"+dir),
@@ -44,7 +48,7 @@ for dir in sys.argv[2:]:
             if (file.endswith(".vhdl")):
                 vhdlsrc = os.path.join(dir, file)
                 filewithoutext, file_extension = os.path.splitext(file)
-                datfile = open(os.path.join(dir, filewithoutext + ".dat"), "wt")
+                datfile = open(os.path.join(dbpath, filewithoutext + ".dat"), "wt")
                 print("  Running VHDL file " + file);
                 retval = subprocess.check_call([os.path.abspath("./scripts/"+sys.argv[1]+".sh"),os.path.abspath("./" +vhdlsrc)],
                                                cwd=os.path.abspath("./"+dir),
