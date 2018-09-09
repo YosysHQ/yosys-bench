@@ -25,26 +25,30 @@ for dir in sys.argv[2:]:
 
 # execute all .v scripts
 for dir in sys.argv[2:]:
+    print(dir)
     for subdir, dirs, files in os.walk(dir):
         for file in files:
             if (file.endswith(".v")):
                 verilogsrc = os.path.join(dir, file)
-                print("Found Verilog file " + file);
+                filewithoutext, file_extension = os.path.splitext(file)
+                datfile = open(os.path.join(dir, filewithoutext + ".dat"), "wt")
+                print("  Running Verilog file " + file);
                 retval = subprocess.check_call([os.path.abspath("./scripts/"+sys.argv[1]+".sh"),os.path.abspath("./" +verilogsrc)],
                                                cwd=os.path.abspath("./"+dir),
-                                               stdout=sys.stdout,
+                                               stdout=datfile,
                                                stderr=sys.stderr
-                                               )                
-
-# execute all .vhdl scripts
-for dir in sys.argv[2:]:
-    for subdir, dirs, files in os.walk(dir):
+                                               )
+                datfile.close()
+                
         for file in files:
             if (file.endswith(".vhdl")):
                 vhdlsrc = os.path.join(dir, file)
-                print("Found VHDL file " + file);
+                filewithoutext, file_extension = os.path.splitext(file)
+                datfile = open(os.path.join(dir, filewithoutext + ".dat"), "wt")
+                print("  Running VHDL file " + file);
                 retval = subprocess.check_call([os.path.abspath("./scripts/"+sys.argv[1]+".sh"),os.path.abspath("./" +vhdlsrc)],
                                                cwd=os.path.abspath("./"+dir),
-                                               stdout=sys.stdout,
+                                               stdout=datfile,
                                                stderr=sys.stderr
-                                               )                
+                                               )
+                datfile.close()                
