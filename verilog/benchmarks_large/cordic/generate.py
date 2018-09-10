@@ -27,7 +27,7 @@ def gen_cordic(stages, bits, template):
     for I in range(0,stages):
         amp = amp * math.sqrt(1.0 + math.pow(2.0,-2*I))
 
-    startval = int( math.floor((2**(bits-2)-1) / amp) )
+    startval = int( math.floor((2**(bits-1)-1) / amp) )
 
     template = template.replace("<w>", str(bits)).replace("<s>", str(stages))
     template = template.replace("<v>", str(bits)+"'d"+str(startval))
