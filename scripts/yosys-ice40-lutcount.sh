@@ -9,7 +9,13 @@ topmodule=$( basename -s .v "$1" )
 scriptpath=$( pwd )
 
 # create synthesis script
-echo "read_verilog $1" > script.yos
+myfile="$1"
+if [ ${myfile: -5} == ".vhdl" ]
+then
+    echo "read_vhdl $1" > script.yos
+else
+    echo "read_verilog $1" > script.yos
+fi
 echo "synth_ice40 -top $topmodule" >> script.yos
 
 # run tools
