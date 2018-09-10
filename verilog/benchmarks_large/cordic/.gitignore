@@ -1,0 +1,3 @@
+cordic_*.v
+*.vvp
+*.vcd
