@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-## Generate population count of a specified width
+## Generate a synchronous RAM with 2^<w> addresses and <s> bit data path.
 
 import math
 
