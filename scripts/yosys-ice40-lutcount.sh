@@ -12,9 +12,9 @@ scriptpath=$( pwd )
 myfile="$1"
 if [ ${myfile: -5} == ".vhdl" ]
 then
-    echo "read_vhdl $1" > script.yos
+    echo "read -vhdl $1" > script.yos
 else
-    echo "read_verilog $1" > script.yos
+    echo "read -vlog2k $1" > script.yos
 fi
 echo "synth_ice40 -top $topmodule" >> script.yos
 
