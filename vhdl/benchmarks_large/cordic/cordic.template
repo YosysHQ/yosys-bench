@@ -1,0 +1,136 @@
+-- pipelined CORDIC algorithm to calculate sin/cos pair from a given angle (0..1)
+-- Author: Niels A. Moseley
+--
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+--  Define the cordic stage
+entity cordic_stage_<w> is
+    generic (shiftN : integer);
+    port
+    (
+        clk         : in std_logic;
+        rst_n       : in std_logic;
+        x_in        : in signed(<w>-1 downto 0);
+        y_in        : in signed(<w>-1 downto 0);
+        angle_in    : in signed(<w>-1 downto 0);
+        angle_adj   : in signed(<w>-1 downto 0);
+        x_out       : out signed(<w>-1 downto 0);
+        y_out       : out signed(<w>-1 downto 0);
+        angle_out   : out signed(<w>-1 downto 0)
+    );
+end cordic_stage_<w>;
+
+architecture rtl of cordic_stage_<w> is
+    signal new_x : signed(<w>-1 downto 0);
+    signal new_y : signed(<w>-1 downto 0);
+    signal new_angle : signed(<w>-1 downto 0);
+begin
+
+    -- combination process
+    proc_comb: process(x_in, y_in, angle_in, angle_adj)
+        alias    sign      : std_logic is angle_in(<w>-1);
+        variable shifted_x : signed(<w>-1 downto 0);
+        variable shifted_y : signed(<w>-1 downto 0);
+    begin
+
+        shifted_x := shift_right(x_in, shiftN);
+        shifted_y := shift_right(y_in, shiftN);
+
+        if (sign = '1') then
+            new_x <= x_in + shifted_y;
+            new_y <= y_in - shifted_x;
+            new_angle <= angle_in + angle_adj;
+        else
+            new_x <= x_in - shifted_y;
+            new_y <= y_in + shifted_x;
+            new_angle <= angle_in - angle_adj;
+        end if;
+    end process proc_comb;
+
+    -- clocked process
+    proc_clk: process(clk)
+    begin
+        if (rising_edge(clk)) then
+            if (rst_n = '0') then
+                -- in reset
+                x_out <= (others => '0');
+                y_out <= (others => '0');
+                angle_out <= (others => '0');
+            else
+                x_out <= new_x;
+                y_out <= new_y;
+                angle_out <= new_angle;
+            end if;
+        end if;
+    end process proc_clk;
+
+end rtl;
+
+
+
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+--  Define the main CORDIC entity
+entity cordic_<s>_<w> is
+    port
+    (
+        clk         : in std_logic;
+        rst_n       : in std_logic;
+        angle_in    : in signed(<w>-1 downto 0);
+        sin_out     : out signed(<w>-1 downto 0);
+        cos_out     : out signed(<w>-1 downto 0)
+    );
+end cordic_<s>_<w>;
+
+architecture rtl of cordic_<s>_<w> is
+    signal x_in : signed (<w>-1 downto 0);
+    signal y_in : signed (<w>-1 downto 0);
+    signal z_in : signed (<w>-1 downto 0);
+
+    type bus_t IS ARRAY (0 to <s>-1) of signed(<w>-1 downto 0);
+
+    signal xbus : bus_t;
+    signal ybus : bus_t;
+    signal zbus : bus_t;
+begin
+  
+    -- combination process
+    proc_comb: process(angle_in)    
+    begin
+        case angle_in(<w>-1 downto <w>-2) is
+        when "00" =>
+            x_in <= <v>;
+            y_in <= (others=>'0');
+            z_in <= angle_in;
+        when "11" =>
+            x_in <= <v>;
+            y_in <= (others=>'0');
+            z_in <= angle_in;
+        when "01" =>
+            x_in <= (others=>'0');
+            y_in <= <v>;
+            z_in <= "00" & angle_in(<w>-3 downto 0);
+        when "10" =>
+            x_in <= (others=>'0');
+            y_in <= -<v>;
+            z_in <= "11" & angle_in(<w>-3 downto 0);
+        when others =>
+            x_in <= (others=>'0');
+            y_in <= (others=>'0');
+            z_in <= (others=>'0');
+        end case;        
+    end process proc_comb;
+
+    -- generate instances of cordic_stage here..
+    <g>
+
+    -- permanently assign outputs
+    cos_out <= xbus(<s>-1);
+    sin_out <= ybus(<s>-1);
+
+end rtl;
