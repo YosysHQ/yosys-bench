@@ -5,15 +5,16 @@
 #
 
 logfile=$( mktemp )
-topmodule=$( basename -s .v "$1" )
 scriptpath=$( pwd )
 
 # create synthesis script
 myfile="$1"
 if [ ${myfile: -5} == ".vhdl" ]
 then
+    topmodule=$( basename -s .vhdl "$1" )
     echo "read -vhdl $1" > script.yos
 else
+    topmodule=$( basename -s .v "$1")
     echo "read -vlog2k $1" > script.yos
 fi
 echo "synth_ice40 -top $topmodule" >> script.yos
