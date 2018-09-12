@@ -68,6 +68,15 @@ library(simple)
     {
       direction : output;
       function : "A'";
+      timing() {
+        intrinsic_rise : 57;
+        intrinsic_fall : 65;
+        rise_resistance : 4.708;
+        fall_resistance : 3.766;
+        slope_rise : 0.0;
+        slope_fall : 0.0;  
+        related_pin : "A";
+      }      
     }
   }  
   
