@@ -161,7 +161,7 @@ library(simple)
   }
   
   /* D-type flip-flop with asynchronous reset and preset */
-  cell (imux2)
+  cell (dff)
   {
     area : 83;
     ff("IQ", "IQN") 
