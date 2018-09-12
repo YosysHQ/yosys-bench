@@ -1,0 +1,18 @@
+========================================
+      Simple Cell Lib version 1.0
+========================================
+
+This is a minimal cell library for benchmarking purposes.
+It contains process-agnostic cells with just one drive strength.
+Cell sizes are given in units of the inverter size.
+This library is solely meant to be uses for benchmarking and is unfit for any purpose.
+
+The following cells are present in the library:
+
+* inverter.
+* tri-state inverter.
+* 2-input nand.
+* 2-input nor.
+* 2-input xor.
+* 2-input inverting mux.
+* D-type flip-flop with reset and preset.
