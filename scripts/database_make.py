@@ -10,6 +10,7 @@ if (len(sys.argv) < 3):
     sys.exit(1)
 
 dbpath = os.path.abspath("./database/"+sys.argv[1])
+celllibpath = os.path.abspath("./celllibs")
 
 os.system("rm -rf "+dbpath)
 os.system("mkdir -p "+dbpath)
@@ -37,7 +38,7 @@ for dir in sys.argv[2:]:
                 filewithoutext, file_extension = os.path.splitext(file)
                 datfile = open(os.path.join(dbpath, filewithoutext + ".dat"), "wt")
                 print("  Running Verilog file " + file)
-                retval = subprocess.check_call([os.path.abspath("./scripts/"+sys.argv[1]+".sh"),os.path.abspath("./" +verilogsrc)],
+                retval = subprocess.check_call([os.path.abspath("./scripts/"+sys.argv[1]+".sh"), os.path.abspath("./" +verilogsrc), celllibpath],
                                                cwd=os.path.abspath("./"+dir),
                                                stdout=datfile,
                                                stderr=sys.stderr
@@ -50,7 +51,7 @@ for dir in sys.argv[2:]:
                 filewithoutext, file_extension = os.path.splitext(file)
                 datfile = open(os.path.join(dbpath, filewithoutext + ".dat"), "wt")
                 print("  Running VHDL file " + file)
-                retval = subprocess.check_call([os.path.abspath("./scripts/"+sys.argv[1]+".sh"),os.path.abspath("./" +vhdlsrc)],
+                retval = subprocess.check_call([os.path.abspath("./scripts/"+sys.argv[1]+".sh"),os.path.abspath("./" +vhdlsrc), cellibpath],
                                                cwd=os.path.abspath("./"+dir),
                                                stdout=datfile,
                                                stderr=sys.stderr
