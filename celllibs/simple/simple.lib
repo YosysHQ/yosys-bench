@@ -51,7 +51,6 @@ library(simple)
     {
       direction : output;
       function : "A'";
-      timing () {}
     }
   }
   
@@ -72,7 +71,6 @@ library(simple)
       direction : output;
       function  : "A'";
       three_State : "S'";
-      timing () {}
     }
   }
   
@@ -87,7 +85,6 @@ library(simple)
     {
       direction : output;
       function : "A'";
-      timing () {}
     }
   }  
   
@@ -107,7 +104,6 @@ library(simple)
     {
       direction: output;
       function : "(A * B)'";
-      timing () {}
     }
   }
   
@@ -127,7 +123,6 @@ library(simple)
     {
       direction: output;
       function : "(A + B)'";
-      timing () {}
     }
   }
   
@@ -147,7 +142,6 @@ library(simple)
     {
       direction: output;
       function : "(A *B') + (A' * B)";
-      timing () {}
     }
   }
   
@@ -171,7 +165,6 @@ library(simple)
     {
       direction: output;
       function : "( (A * S) + (B * S') )'";
-      timing () {}
     }
   }
   
