@@ -84,7 +84,7 @@ library(simple)
     pin(Y)
     {
       direction : output;
-      function : "A'";
+      function : "A";
     }
   }  
   
