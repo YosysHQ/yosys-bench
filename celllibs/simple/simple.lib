@@ -189,11 +189,51 @@ library(simple)
     {
       direction: output;
       function : "IQ";
+      timing() {
+        timing_type : rising_edge;
+        intrinsic_rise : 65;
+        intrinsic_fall : 65;
+        rise_resistance : 0;
+        fall_resistance : 0; 
+        related_pin : "CLK";
+      }
+      timing () {
+        timing_type : clear;
+        timing_sense : positive_unate;
+        intrinsic_fall : 75;
+        related_pin : "RESET";
+      }
+      timing () {
+        timing_type : preset;
+        timing_sense : negative_unate;
+        intrinsic_rise : 75;
+        related_pin : "PRESET";
+      }      
     }
     pin(QN)
     {
       direction: output;
       function : "IQN";
+      timing() {
+        timing_type : rising_edge;
+        intrinsic_rise : 65;
+        intrinsic_fall : 65;
+        rise_resistance : 0;
+        fall_resistance : 0; 
+        related_pin : "CLK";
+      }
+      timing () {
+        timing_type : preset;
+        timing_sense : negative_unate;
+        intrinsic_rise : 75;
+        related_pin : "RESET";
+      }
+      timing () {
+        timing_type : clear;
+        timing_sense : positive_unate;
+        intrinsic_fall : 75;
+        related_pin : "PRESET";
+      }      
     } 
   }
   
