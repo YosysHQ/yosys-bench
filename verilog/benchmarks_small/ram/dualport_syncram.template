@@ -1,0 +1,39 @@
+// Dual-port Synchronous RAM template file
+// Author: Niels A. Moseley
+//
+// Modelled after the ICE40 SBRAM blocks but with only one clock domain
+// Also, it is assumed that the read enable is always asserted.
+// I don't know what happens to the read data when the address is
+// simultaneously written.
+//
+//
+
+module dualport_syncram_<w>_<s> (
+    clk,        // common clock
+    cs,         // active-high chip select
+    we,         // active-high write enable
+    waddr,      // write address
+    wdata,      // write data input
+    raddr,      // read address
+    rdata,      // read data output
+);
+
+input clk,cs,we;
+input [<w>-1:0] waddr;
+input [<w>-1:0] raddr;
+input [<s>-1:0] wdata;
+output reg [<s>-1:0] rdata;
+
+reg [<s>-1:0] mem [0:<w>-1];
+
+always @(posedge clk)
+begin
+    if (cs == 1'b1) begin
+        if (we) begin
+            mem[waddr] <= wdata;
+        end
+        rdata <= mem[raddr];
+    end // chip select
+end
+
+endmodule
