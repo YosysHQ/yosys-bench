@@ -8,7 +8,11 @@
 /* Process: none                            */
 /*                                          */
 /* Date   : 12-9-2018                       */
-/* Version: 1.0                             */
+/* Version: 1.1                             */
+/*                                          */
+/* Changelog:                               */
+/*    1.0     NAM     Initial version       */
+/*    1.1     NAM     Added latch           */
 /*                                          */
 /********************************************/
 
@@ -244,5 +248,103 @@ library(simple)
       }      
     } 
   }
-  
+
+  /* Latch with asynchronous reset and preset */
+  cell(latch) 
+  {
+    area : 5;
+    pin(D) 
+    {
+      direction : input;
+      capacitance : 1;
+      timing() 
+      {
+        timing_type : setup_falling;
+        intrinsic_rise : 65;
+        intrinsic_fall : 65;
+        related_pin : "G";
+      }
+      timing() 
+      {
+        timing_type : hold_falling;
+        intrinsic_rise : 65;
+        intrinsic_fall : 65;
+        related_pin : "G";
+      }
+    }
+    pin(G) 
+    {
+      direction : input;
+      capacitance : 1;
+      min_pulse_width_high : 1.5;
+      min_pulse_width_low : 1.5;
+    }
+    
+    latch ("IQ","IQN") 
+    {
+      enable : "G";
+      data_in : "D";
+    }
+    
+    statetable ( "  D   G ", " Q  QN") 
+    {
+      table  : "  -   L : - - :  N   N, \
+                H/L  H  : - - : H/L L/H";
+    }
+    
+    pin(Q) 
+    {
+      direction : output;
+      function : "IQ";
+      internal_node : "Q";
+      
+      timing() 
+      {
+        timing_type : rising_edge;
+        intrinsic_rise : 65;
+        intrinsic_fall : 65;
+        rise_resistance : 0.1458;
+        fall_resistance : 0.0653;
+        related_pin : "G";
+      }
+      
+      timing() 
+      {
+        timing_sense : positive_unate;
+        intrinsic_rise : 0.89;
+        intrinsic_fall : 0.86;
+        rise_resistance : 0.1458;
+        fall_resistance : 0.0653;
+        related_pin : "D";
+      }
+    }
+    
+    pin(QN) 
+    {
+      direction : output;
+      function : "IQN";
+      internal_node : "QN";
+      
+      timing() 
+      {
+        timing_type : rising_edge;
+        intrinsic_rise : 65;
+        intrinsic_fall : 65;
+        rise_resistance : 0;
+        fall_resistance : 0;
+        related_pin : "G";
+      }
+      
+      timing() 
+      {
+        timing_sense : negative_unate;
+        intrinsic_rise : 65;
+        intrinsic_fall : 65;
+        rise_resistance : 0;
+        fall_resistance : 0;
+        related_pin : "D";
+      }
+    }
+  }
+
 } /* end */
