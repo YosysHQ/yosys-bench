@@ -21,7 +21,7 @@ for dir in sys.argv[2:]:
         for file in files:
             if (file == "generate.py"):
                 script = os.path.join(dir, file)
-                print("Executing " + script);
+                print("Executing " + script)
                 retval = subprocess.check_call(["python3","generate.py"], 
                                                cwd=os.path.abspath("./"+dir),
                                                stdout=sys.stdout,
@@ -34,6 +34,16 @@ for dir in sys.argv[2:]:
     for subdir, dirs, files in os.walk(dir):
         for file in files:
             if (file.endswith(".v")):
+                # skip all files that end in _tb.v as they are testbench files
+                # containing unsynthesizable code
+                if (file.endswith("_tb.v")):
+                    print("  Skipping Verilog testbench file " + file)
+                    continue
+                # skip any netlist files that might have been produced in 
+                # previous runs
+                if (file.endswith("_netlist.v")):
+                    print("  Skipping Verilog netlist file " + file)
+                    continue
                 verilogsrc = os.path.join(dir, file)
                 filewithoutext, file_extension = os.path.splitext(file)
                 datfile = open(os.path.join(dbpath, filewithoutext + ".dat"), "wt")
@@ -51,7 +61,7 @@ for dir in sys.argv[2:]:
                 filewithoutext, file_extension = os.path.splitext(file)
                 datfile = open(os.path.join(dbpath, filewithoutext + ".dat"), "wt")
                 print("  Running VHDL file " + file)
-                retval = subprocess.check_call([os.path.abspath("./scripts/"+sys.argv[1]+".sh"),os.path.abspath("./" +vhdlsrc), cellibpath],
+                retval = subprocess.check_call([os.path.abspath("./scripts/"+sys.argv[1]+".sh"),os.path.abspath("./" +vhdlsrc), celllibpath],
                                                cwd=os.path.abspath("./"+dir),
                                                stdout=datfile,
                                                stderr=sys.stderr
