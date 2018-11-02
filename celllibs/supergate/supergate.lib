@@ -12,7 +12,7 @@
 /*                                          */
 /********************************************/
 
-library(simple) 
+library(supergate) 
 {
   technology (cmos);
   revision : 1.0;
@@ -171,7 +171,7 @@ library(simple)
   /* D-type flip-flop with asynchronous reset and preset */
   cell (dff)
   {
-    area : 83;
+    area : 6;
     ff("IQ", "IQN") 
     {
       next_state : "D";
@@ -246,44 +246,24 @@ library(simple)
   }
 
   /* Latch */
-  cell(latch) 
+    cell(latch) 
   {
-    area : 40;
-    pin(D) 
-    {
-      direction : input;
-      timing() 
-      {
-        timing_type : setup_falling;
-        intrinsic_rise : 65;
-        intrinsic_fall : 65;
-        related_pin : "G";
-      }
-      timing() 
-      {
-        timing_type : hold_falling;
-        intrinsic_rise : 65;
-        intrinsic_fall : 65;
-        related_pin : "G";
-      }
-    }
-    pin(G) 
-    {
-      direction : input;
-    }
-    
+    area : 5;
     latch ("IQ","IQN") 
     {
       enable : "G";
       data_in : "D";
     }
-    
-    statetable ( "  D   G ", " Q  QN") 
+
+    pin(D) 
     {
-      table  : "  -   L : - - :  N   N, \
-                H/L  H  : - - : H/L L/H";
+      direction : input;
     }
-    
+    pin(G) 
+    {
+      direction : input;
+    }
+ 
     pin(Q) 
     {
       direction : output;
@@ -295,7 +275,7 @@ library(simple)
         timing_type : rising_edge;
         intrinsic_rise : 65;
         intrinsic_fall : 65;
-        rise_resistance : 0
+        rise_resistance : 0;
         fall_resistance : 0;
         related_pin : "G";
       }
