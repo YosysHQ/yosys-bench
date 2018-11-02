@@ -1,0 +1,26 @@
+========================================
+      Supergate Cell Lib version 1.0
+========================================
+
+This is a cell library for benchmarking purposes.
+The library is based on the 'simple' cell library but additionally
+contains a half-adder, full-adder, AOI221 and OAI221 cells.
+
+The cells are process-agnostic with just one drive strength.
+Cell sizes are given in units of the inverter size.
+This library is solely meant to be uses for benchmarking and is unfit for any purpose.
+
+The following cells are present in the library:
+
+* inverter.
+* tri-state inverter.
+* 2-input nand.
+* 2-input nor.
+* 2-input xor.
+* 2-input inverting mux.
+* D-type flip-flop with reset and preset.
+* half-adder cell.
+* full-adder cell.
+* and-or-invert 211 cell.
+* or-and-invert 211 cell.
+
