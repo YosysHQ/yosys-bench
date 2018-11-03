@@ -24,6 +24,7 @@ else
     topmodule=$( basename -s .v "$1")
     echo "read -vlog2k $1" > script.yos
 fi
+#echo "read_liberty $celllibpath/supergate/supergate.lib" >> script.yos
 echo "hierarchy; proc; fsm; opt; memory; opt" >> script.yos
 echo "techmap; opt" >> script.yos
 echo "dfflibmap -liberty $celllibpath/supergate/supergate.lib" >> script.yos

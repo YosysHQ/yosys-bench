@@ -12,8 +12,7 @@
 /*                                          */
 /********************************************/
 
-library(supergate) 
-{
+library(supergate) {
   technology (cmos);
   revision : 1.0;
   
@@ -40,140 +39,112 @@ library(supergate)
   delay_model                   : generic_cmos;
   
   /* Inverter */
-  cell (inv)
-  {
+  cell (inv) {
     area : 1;
-    pin(A)
-    {
+    pin(A) {
       direction : input;
     }
-    pin(Y)
-    {
+    
+    pin(Y) {
       direction : output;
       function : "A'";
     }
   }
   
   /* tri-state inverter */
-  cell (tri_inv)
-  {
+  cell (tri_inv) {
     area : 4;
-    pin(A)
-    {
+    pin(A) {
       direction : input;    
     }
-    pin(S)
-    {
+    pin(S) {
       direction : input;
     }
-    pin(Z)
-    {
+    pin(Z) {
       direction : output;
       function  : "A'";
       three_State : "S'";
     }
   }
   
-  cell (buf)
-  {
+  cell (buffer) {
     area : 5;
-    pin(A)
-    {
+    pin(A) {
       direction : input;
     }
-    pin(Y)
-    {
+    pin(Y) {
       direction : output;
       function : "A";
     }
   }  
   
   /* 2-input NAND gate */
-  cell (nand2)
-  {
+  cell (nand2) {
     area : 3;
-    pin(A)
-    {
+    pin(A) {
       direction : input;
     }
-    pin(B)
-    {
+    pin(B) {
       direction : input;
     }
-    pin(Y)
-    {
+    pin(Y) {
       direction: output;
       function : "(A * B)'";
     }
   }
   
   /* 2-input NOR gate */
-  cell (nor2)
-  {
+  cell (nor2) {
     area : 3;
-    pin(A)
-    {
+    pin(A) {
       direction : input;
     }
-    pin(B)
-    {
+    pin(B) {
       direction : input;
     }
-    pin(Y)
-    {
+    pin(Y) {
       direction: output;
       function : "(A + B)'";
     }
   }
   
   /* 2-input XOR */
-  cell (xor2)
-  {
+  cell (xor2) {
     area : 6;
-    pin(A)
-    {
+    pin(A) {
       direction : input;
     }
-    pin(B)
-    {
+    pin(B) {
       direction : input;
     }
-    pin(Y)
-    {
+    pin(Y) {
       direction: output;
       function : "(A *B') + (A' * B)";
     }
   }
   
   /* 2-input inverting MUX */
-  cell (imux2)
-  {
+  cell (imux2) {
     area : 5;
-    pin(A)
-    {
+    pin(A) {
       direction : input;
     }
-    pin(B)
-    {
+    pin(B) {
       direction : input;
     }
-    pin(S)
-    {
+    pin(S) {
       direction : input;
     } 
-    pin(Y)
-    {
+    pin(Y) {
       direction: output;
       function : "( (A * S) + (B * S') )'";
     }
   }
   
   /* D-type flip-flop with asynchronous reset and preset */
-  cell (dff)
-  {
+  cell (dff) {
     area : 6;
-    ff("IQ", "IQN") 
-    {
+    ff("IQ", "IQN") {
       next_state : "D";
       clocked_on : "CLK";
       clear      : "RESET";
@@ -181,20 +152,19 @@ library(supergate)
       clear_preset_var1 : L;
       clear_preset_var2 : L;
     } 
-    pin(CLK)
-    {
+    pin(D) {
+      direction : input;
+    }    
+    pin(CLK) {
       direction : input;
     }
-    pin(RESET)
-    {
+    pin(RESET) {
       direction : input;
     }
-    pin(PRESET)
-    {
+    pin(PRESET) {
       direction : input;
     }
-    pin(Q)
-    {
+    pin(Q) {
       direction: output;
       function : "IQ";
       timing() {
@@ -218,8 +188,7 @@ library(supergate)
         related_pin : "PRESET";
       }      
     }
-    pin(QN)
-    {
+    pin(QN) {
       direction: output;
       function : "IQN";
       timing() {
@@ -246,32 +215,26 @@ library(supergate)
   }
 
   /* Latch */
-    cell(latch) 
-  {
+  cell(latch) {
     area : 5;
-    latch ("IQ","IQN") 
-    {
+    latch ("IQ","IQN") {
       enable : "G";
       data_in : "D";
     }
 
-    pin(D) 
-    {
+    pin(D) {
       direction : input;
     }
-    pin(G) 
-    {
+    pin(G) {
       direction : input;
     }
  
-    pin(Q) 
-    {
+    pin(Q) {
       direction : output;
       function : "IQ";
       internal_node : "Q";
       
-      timing() 
-      {
+      timing() {
         timing_type : rising_edge;
         intrinsic_rise : 65;
         intrinsic_fall : 65;
@@ -280,8 +243,7 @@ library(supergate)
         related_pin : "G";
       }
       
-      timing() 
-      {
+      timing() {
         timing_sense : positive_unate;
         intrinsic_rise : 65;
         intrinsic_fall : 65;
@@ -291,14 +253,12 @@ library(supergate)
       }
     }
     
-    pin(QN) 
-    {
+    pin(QN) {
       direction : output;
       function : "IQN";
       internal_node : "QN";
       
-      timing() 
-      {
+      timing() {
         timing_type : rising_edge;
         intrinsic_rise : 65;
         intrinsic_fall : 65;
@@ -307,8 +267,7 @@ library(supergate)
         related_pin : "G";
       }
       
-      timing() 
-      {
+      timing() {
         timing_sense : negative_unate;
         intrinsic_rise : 65;
         intrinsic_fall : 65;
@@ -320,23 +279,18 @@ library(supergate)
   }
 
   /* 3 input AND-OR-INVERT gate */
-  cell (aoi211)
-  {
+  cell (aoi211) {
     area : 3;
-    pin(A)
-    {
+    pin(A) {
       direction : input;
     }
-    pin(B)
-    {
+    pin(B) {
       direction : input;
     }
-    pin(C)
-    {
+    pin(C) {
       direction : input;
     }    
-    pin(Y)
-    {
+    pin(Y) {
       direction: output;
       function : "((A * B) + C)'";
     }
@@ -344,75 +298,59 @@ library(supergate)
 
 
   /* 3 input OR-AND-INVERT gate */
-  cell (oai211)
-  {
+  cell (oai211) {
     area : 3;
-    pin(A)
-    {
+    pin(A) {
       direction : input;
     }
-    pin(B)
-    {
+    pin(B) {
       direction : input;
     }
-    pin(C)
-    {
+    pin(C) {
       direction : input;
     }    
-    pin(Y)
-    {
+    pin(Y) {
       direction: output;
       function : "((A + B) * C)'";
     }
   }
 
   /* half adder */
-  cell (halfadder)
-  {
+  cell (halfadder) {
     area : 5;
-    pin(A)
-    {
+    pin(A) {
       direction : input;
     }
-    pin(B)
-    {
+    pin(B) {
       direction : input;
     }
-    pin(C)
-    {
+    pin(C) {
       direction : output;
       function  : "(A * B)";
     }    
-    pin(Y)
-    {
+    pin(Y) {
       direction: output;
       function : "(A *B') + (A' * B)";
     }    
   }
 
   /* full adder */
-  cell (fulladder)
-  {
+  cell (fulladder) {
     area : 8;
-    pin(A)
-    {
+    pin(A) {
       direction : input;
     }
-    pin(B)
-    {
+    pin(B) {
       direction : input;
     }
-    pin(CI)
-    {
+    pin(CI) {
       direction : input;
     }    
-    pin(CO)
-    {
+    pin(CO) {
       direction : output;
       function : "(((A * B)+(B * CI))+(CI * A))";
     }
-    pin(Y)
-    {
+    pin(Y) {
       direction: output;
       function : "((A^B)^CI)";
     }    

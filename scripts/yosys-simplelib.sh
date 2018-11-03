@@ -29,7 +29,7 @@ echo "techmap; opt" >> script.yos
 echo "dfflibmap -liberty $celllibpath/simple/simple.lib" >> script.yos
 echo "abc -liberty $celllibpath/simple/simple.lib" >> script.yos
 echo "write_verilog /$1_netlist.v" >> script.yos
-#echo "stat -liberty" >> script.yos
+echo "stat -liberty $celllibpath/simple/simple.lib" >> script.yos
 #echo "strash; ifraig; scorr; dc2; dretime; strash; &get -n; &dch -f; &nf {D}; &put" > abc.script
 
 # run tools

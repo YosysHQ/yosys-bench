@@ -185,6 +185,10 @@ library(simple)
       clear_preset_var1 : L;
       clear_preset_var2 : L;
     } 
+    pin(D)
+    {
+      direction : input;
+    }    
     pin(CLK)
     {
       direction : input;
@@ -253,45 +257,21 @@ library(simple)
   cell(latch) 
   {
     area : 5;
-    pin(D) 
-    {
-      direction : input;
-      capacitance : 1;
-      timing() 
-      {
-        timing_type : setup_falling;
-        intrinsic_rise : 65;
-        intrinsic_fall : 65;
-        related_pin : "G";
-      }
-      timing() 
-      {
-        timing_type : hold_falling;
-        intrinsic_rise : 65;
-        intrinsic_fall : 65;
-        related_pin : "G";
-      }
-    }
-    pin(G) 
-    {
-      direction : input;
-      capacitance : 1;
-      min_pulse_width_high : 1.5;
-      min_pulse_width_low : 1.5;
-    }
-    
     latch ("IQ","IQN") 
     {
       enable : "G";
       data_in : "D";
     }
-    
-    statetable ( "  D   G ", " Q  QN") 
+
+    pin(D) 
     {
-      table  : "  -   L : - - :  N   N, \
-                H/L  H  : - - : H/L L/H";
+      direction : input;
     }
-    
+    pin(G) 
+    {
+      direction : input;
+    }
+ 
     pin(Q) 
     {
       direction : output;
@@ -303,18 +283,18 @@ library(simple)
         timing_type : rising_edge;
         intrinsic_rise : 65;
         intrinsic_fall : 65;
-        rise_resistance : 0.1458;
-        fall_resistance : 0.0653;
+        rise_resistance : 0;
+        fall_resistance : 0;
         related_pin : "G";
       }
       
       timing() 
       {
         timing_sense : positive_unate;
-        intrinsic_rise : 0.89;
-        intrinsic_fall : 0.86;
-        rise_resistance : 0.1458;
-        fall_resistance : 0.0653;
+        intrinsic_rise : 65;
+        intrinsic_fall : 65;
+        rise_resistance : 0;
+        fall_resistance : 0;
         related_pin : "D";
       }
     }
