@@ -20,10 +20,10 @@ for dir in sys.argv[2:]:
     for subdir, dirs, files in os.walk(dir):
         for file in files:
             if (file == "generate.py"):
-                script = os.path.join(dir, file)
+                script = os.path.join(subdir, file)
                 print("Executing " + script)
                 retval = subprocess.check_call(["python3","generate.py"], 
-                                               cwd=os.path.abspath("./"+dir),
+                                               cwd=os.path.abspath(subdir),
                                                stdout=sys.stdout,
                                                stderr=sys.stderr
                                                )
@@ -44,12 +44,12 @@ for dir in sys.argv[2:]:
                 if (file.endswith("_netlist.v")):
                     print("  Skipping Verilog netlist file " + file)
                     continue
-                verilogsrc = os.path.join(dir, file)
+                verilogsrc = os.path.join(subdir, file)
                 filewithoutext, file_extension = os.path.splitext(file)
                 datfile = open(os.path.join(dbpath, filewithoutext + ".dat"), "wt")
                 print("  Running Verilog file " + file)
                 retval = subprocess.check_call([os.path.abspath("./scripts/"+sys.argv[1]+".sh"), os.path.abspath("./" +verilogsrc), celllibpath],
-                                               cwd=os.path.abspath("./"+dir),
+                                               cwd=os.path.abspath(subdir),
                                                stdout=datfile,
                                                stderr=sys.stderr
                                                )
@@ -57,12 +57,12 @@ for dir in sys.argv[2:]:
                 
         for file in files:
             if (file.endswith(".vhdl")):
-                vhdlsrc = os.path.join(dir, file)
+                vhdlsrc = os.path.join(subdir, file)
                 filewithoutext, file_extension = os.path.splitext(file)
                 datfile = open(os.path.join(dbpath, filewithoutext + ".dat"), "wt")
                 print("  Running VHDL file " + file)
                 retval = subprocess.check_call([os.path.abspath("./scripts/"+sys.argv[1]+".sh"),os.path.abspath("./" +vhdlsrc), celllibpath],
-                                               cwd=os.path.abspath("./"+dir),
+                                               cwd=os.path.abspath(subdir),
                                                stdout=datfile,
                                                stderr=sys.stderr
                                                )
