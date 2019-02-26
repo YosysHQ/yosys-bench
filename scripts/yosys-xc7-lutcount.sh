@@ -28,7 +28,5 @@ grep -q 'LUT3' $logfile && sed -rn 's/\s+LUT3\s+([0-9]+)/\1/p' $logfile || echo 
 grep -q 'LUT4' $logfile && sed -rn 's/\s+LUT4\s+([0-9]+)/\1/p' $logfile || echo '0'
 grep -q 'LUT5' $logfile && sed -rn 's/\s+LUT5\s+([0-9]+)/\1/p' $logfile || echo '0'
 grep -q 'LUT6' $logfile && sed -rn 's/\s+LUT6\s+([0-9]+)/\1/p' $logfile || echo '0'
-grep -q 'LUT7' $logfile && sed -rn 's/\s+LUT7\s+([0-9]+)/\1/p' $logfile || echo '0'
-grep -q 'LUT8' $logfile && sed -rn 's/\s+LUT8\s+([0-9]+)/\1/p' $logfile || echo '0'
 rm -f $logfile
 rm -f script.yos
