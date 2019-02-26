@@ -3,13 +3,25 @@
 import os
 import sys
 import subprocess
+import shutil
+import re
 
 # Check the number of arguments to provide help, if needed.
 if (len(sys.argv) < 3):
     print("Usage: database_make <mode> <dir1> .. <dirN>")
     sys.exit(1)
 
-dbpath = os.path.abspath("./database/"+sys.argv[1])
+version = str()
+if sys.argv[1].startswith('yosys'):
+    if not shutil.which('yosys'):
+        print("\"yosys\" not found on PATH")
+        sys.exit(1)
+
+    version = subprocess.check_output(['yosys', '-V'])
+    version = version.decode().strip()
+    version = '-' + re.search(r'\(git sha1 ([0-9a-f]{7}), ', version).group(1)
+
+dbpath = os.path.abspath("./database/"+sys.argv[1]+version)
 celllibpath = os.path.abspath("./celllibs")
 
 os.system("rm -rf "+dbpath)
