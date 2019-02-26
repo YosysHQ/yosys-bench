@@ -21,4 +21,4 @@ estimating the overall performance of the tools.
 running the benchmarks
 ----------------------
 
-run './scripts/database_make.sh yosys-ice40-lutcount <directory1> <directory2>'
+run './scripts/database_make.py yosys-ice40-lutcount <directory1> <directory2>'
