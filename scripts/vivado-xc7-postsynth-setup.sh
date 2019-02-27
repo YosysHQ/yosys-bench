@@ -25,4 +25,4 @@ echo "report_design_analysis -timing -file $logfile" >> script.tcl
 vivado -mode batch -nolog -nojournal -source script.tcl > /dev/null
 sed -rn 's/^\|\s+Path Delay\s+\|\s+([0-9\.]+).+/\1/p' $logfile
 rm -f $logfile
-rm -f script.yos script.tcl
+rm -f script.tcl
