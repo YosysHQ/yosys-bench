@@ -4,7 +4,7 @@
 //         02-11-2018
 // 
 
-module latch8(input [7:0] din, input gate, output reg [7:0] dout);
+module latch(input [7:0] din, input gate, output reg [7:0] dout);
 
   reg [7:0] state;
 
