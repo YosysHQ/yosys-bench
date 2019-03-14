@@ -17,6 +17,7 @@ class delay:
         plt.ylabel('Post-synth delay normalised to Vivado')
         plt.axhline(1.0, color='0.5', linewidth=0.5, linestyle='-')
     def post():
+        plt.legend()
         plt.xlim(left=0)
     def str2float(s): 
         try:
@@ -27,13 +28,14 @@ class delay:
         return [
             ('vivado-xc7-postsynth-setup', delay.str2float),
             ('yosys-xc7-vivado-postsynth-setup-5706e90', delay.str2float),
+#            ('yosys-xc7-vivado-postsynth-setup-44a44a0', delay.str2float),
         ]
 
 
 class area:
-    min_annotate_y = 1
-    max_annotate_y = 3
     ylim = 3
+    min_annotate_y = 1
+    max_annotate_y = ylim
     def pre():
         ax = plt.subplot(2, 1, 2)
         ax.grid(True, which='major')
@@ -45,6 +47,7 @@ class area:
         plt.xlabel('Benchmark Number')
         plt.ylim(top=area.ylim)
     def post():
+        plt.legend()
         plt.xlim(left=0)
     def nluts2area(s): 
         luts = list(map(int, s.split()))
@@ -53,6 +56,7 @@ class area:
         return [
             ('vivado-xc7-lutcount', area.nluts2area),
             ('yosys-xc7-lutcount-5706e90', area.nluts2area),
+#            ('yosys-xc7-lutcount-44a44a0', area.nluts2area),
         ]
 
 subplots = [
@@ -77,22 +81,23 @@ for i,e in enumerate(subplots):
                     v.append(f(r)/v[0])
                 except KeyError:
                     pass
-    array = np.array([(x,v[j]) for x,(k,v) in enumerate(sorted(data.items()))])
-    plt.scatter(array[:,0], array[:,1], color=cmap(i), s=3, marker='x', linewidth=0.5)
-    try:
-        over_array = array[array[:,1]>e.ylim]
-        plt.scatter(over_array[:,0], [3]*len(over_array), color=cmap(i), s=3, marker='x', linewidth=0.5, zorder=1000)
-    except AttributeError:
-        pass
-    last_min = float('-inf')
-    last_max = float('-inf')
-    for x,(k,v) in enumerate(sorted(data.items())):
-        if v[j] < e.min_annotate_y and x - last_min >= 10:
-            plt.text(s=k, x=x, y=min(v[j],e.min_annotate_y), rotation=-45, fontsize=6, ha='left', va='top')
-            last_min = x
-        if v[j] > e.max_annotate_y and x - last_max >= 10:
-            plt.text(s=k, x=x, y=min(v[j],e.max_annotate_y), rotation=45, fontsize=6, ha='left', va='bottom')
-            last_max = x
+        if j == 0: continue
+        array = np.array([(x,v[j]) for x,(k,v) in enumerate(sorted(data.items()))])
+        plt.scatter(array[:,0], array[:,1], color=cmap(j-1), s=3, marker='x', linewidth=0.5, label=d)
+        try:
+            over_array = array[array[:,1]>e.ylim]
+            plt.scatter(over_array[:,0], [3]*len(over_array), color=cmap(j-1), s=3, marker='x', linewidth=0.5, zorder=1000)
+        except AttributeError:
+            pass
+        last_min = float('-inf')
+        last_max = float('-inf')
+        for x,(k,v) in enumerate(sorted(data.items())):
+            if v[j] < e.min_annotate_y and x - last_min >= 10:
+                plt.text(s=k, x=x, y=min(v[j], e.min_annotate_y), rotation=-45, fontsize=6, ha='left', va='top', color=cmap(j-1))
+                last_min = x
+            if v[j] > e.max_annotate_y and x - last_max >= 10:
+                plt.text(s=k, x=x, y=min(v[j], e.max_annotate_y), rotation=45, fontsize=6, ha='left', va='bottom', color=cmap(j-1))
+                last_max = x
     e.post()
 
 fig.savefig("norm-area-delay.pdf", bbox_inches="tight")
