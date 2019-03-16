@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# mode script for ICE40 FPGA LUT count
+# mode script for ICE40 FPGA FF count
 #
 
 logfile=$( mktemp )
