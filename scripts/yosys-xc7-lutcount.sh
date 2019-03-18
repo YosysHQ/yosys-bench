@@ -21,7 +21,11 @@ echo "synth_xilinx -top $topmodule" >> $tmpdir/script.ys
 
 # run tools
 yosys -ql $logfile -p "script $tmpdir/script.ys" >/dev/null
-sed -r '1,/^=== design hierarchy ===$/d' -i $logfile
+if grep -q "^=== design hierarchy ===$" $logfile; then
+    sed -r '1,/^=== design hierarchy ===$/d' -i $logfile;
+else
+    sed -r '1,/^[0-9\.]+ Printing statistics\.$/d' -i $logfile;
+fi
 grep -q 'LUT1' $logfile && sed -rn 's/\s+LUT1\s+([0-9]+)/\1/p' $logfile || echo '0'
 grep -q 'LUT2' $logfile && sed -rn 's/\s+LUT2\s+([0-9]+)/\1/p' $logfile || echo '0'
 grep -q 'LUT3' $logfile && sed -rn 's/\s+LUT3\s+([0-9]+)/\1/p' $logfile || echo '0'
