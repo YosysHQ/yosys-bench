@@ -175,7 +175,7 @@ def gen_lfsr(taps):
     length = taps[0]
     with open("lfsr_%d.v" % (length), "w") as f:
         print("""
-module lfsr_{0} (input clk, input din, output dout);
+module lfsr_{0} (input clk, output dout);
   reg [{0}:1] state = {0}'b0;
   always @(posedge clk)
     state <= {{ state[{0}-1:1], {1} }};
