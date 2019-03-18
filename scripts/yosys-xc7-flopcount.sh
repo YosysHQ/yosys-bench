@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# mode script for Xilinx FPGA LUT count
+# mode script for Xilinx FPGA FF count
 #
 
 tmpdir=$( mktemp -d )
@@ -21,11 +21,10 @@ echo "synth_xilinx -top $topmodule" >> $tmpdir/script.ys
 
 # run tools
 yosys -ql $logfile -p "script $tmpdir/script.ys" >/dev/null
-sed -r '1,/^=== design hierarchy ===$/d' -i $logfile
-grep -q 'FDRE '  $logfile && sed -rn 's/\s+FDRE\s+([0-9]+)/\1/p' $logfile || echo '0'
-grep -q 'FDRE_1' $logfile && sed -rn 's/\s+FDRE_1\s+([0-9]+)/\1/p' $logfile || echo '0'
-grep -q 'FDCE '  $logfile && sed -rn 's/\s+FDCE\s+([0-9]+)/\1/p' $logfile || echo '0'
-grep -q 'FDCE_1' $logfile && sed -rn 's/\s+FDCE_1\s+([0-9]+)/\1/p' $logfile || echo '0'
-grep -q 'FDPE '  $logfile && sed -rn 's/\s+FDPE\s+([0-9]+)/\1/p' $logfile || echo '0'
-grep -q 'FDPE_1' $logfile && sed -rn 's/\s+FDPE_1\s+([0-9]+)/\1/p' $logfile || echo '0'
+if grep -q "^=== design hierarchy ===$" $logfile; then
+    sed -r '1,/^=== design hierarchy ===$/d' -i $logfile;
+else
+    sed -r '1,/^[0-9\.]+ Printing statistics\.$/d' -i $logfile;
+fi
+grep -q '^\s\+FD' $logfile && sed -rn 's/^\s+FD.*\s+([0-9]+)/\1/p' $logfile || echo '0'
 rm -r $tmpdir

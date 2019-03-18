@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #
-# mode script for Xilinx FPGA LUT count
+# mode script for Xilinx FPGA FF count
 #
 
 tmpdir=$( mktemp -d )
