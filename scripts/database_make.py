@@ -19,7 +19,7 @@ if sys.argv[1].startswith('yosys'):
 
     version = subprocess.check_output(['yosys', '-V'])
     version = version.decode().strip()
-    version = '-' + re.search(r'\(git sha1 ([0-9a-f]{7}), ', version).group(1)
+    version = '-' + re.search(r'Yosys ([0-9\.\+]+) ', version).group(1)
 
 dbpath = os.path.abspath("./database/"+sys.argv[1]+version)
 celllibpath = os.path.abspath("./celllibs")
