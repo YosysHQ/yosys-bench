@@ -1,4 +1,6 @@
-// 128-tap band-pass filter from http://t-filter.engineerjs.com
+// 128-tap band-pass filter
+//   (0-200Hz: -119.27dB; 300-500Hz: 0.00dB; 600-1000Hz: -119.27dB)
+//   Coefficients from http://t-filter.engineerjs.com
 0
 0
 0
