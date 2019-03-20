@@ -1,5 +1,7 @@
 # PICORV32 - a size-optimized RISC-V core
 
+Source: https://github.com/cliffordwolf/picorv32/tree/v1.0
+
 There are three cores: small, regular and large.
 
 - **PicoRV32 (small):** The `picorv32` module without counter instructions,
