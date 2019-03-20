@@ -129,7 +129,7 @@ taps = [
         (126,125,90,89),
         (127,126),
         (128,126,101,99),
-        (128,124),
+        (129,124),
         (130,127),
         (131,130,84,83),
         (132,103),
@@ -175,7 +175,7 @@ def gen_lfsr(taps):
     length = taps[0]
     with open("lfsr_%d.v" % (length), "w") as f:
         print("""
-module lfsr_{0} (input clk, input din, output dout);
+module lfsr_{0} (input clk, output dout);
   reg [{0}:1] state = {0}'b0;
   always @(posedge clk)
     state <= {{ state[{0}-1:1], {1} }};
