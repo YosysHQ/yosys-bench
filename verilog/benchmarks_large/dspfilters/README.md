@@ -15,3 +15,9 @@ Currently three designs exist:
   response (FIR) filter, configured as a 12-bit 128-tap band-pass filter. This is a
   modified variant of the original slowfir that uses a shift-register approach to
   store all input samples.
+
+The 12-bit 128-tap band pass filter has the following performance characteristics:
+- 0-200Hz: -119.27dB
+- 300-500Hz: 0.00dB
+- 600-1000Hz: -119.27dB
+coefficients generated using http://t-filter.engineerjs.com
