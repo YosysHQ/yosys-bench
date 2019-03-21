@@ -139,7 +139,7 @@ module	slowfil_srl(i_clk, i_reset, i_tap_wr, i_tap, i_ce, i_sample, o_ce, o_resu
 		for (i = 0; i < IW; i=i+1) begin
 			always @(posedge i_clk)
 				if (i_ce)
-					dsrl[i] <= { dsrl[i][0:(MEMSZ-2)], i_sample[i] };
+					dsrl[i] <= { dsrl[i][(MEMSZ-2):0], i_sample[i] };
 		end
 	endgenerate
 
