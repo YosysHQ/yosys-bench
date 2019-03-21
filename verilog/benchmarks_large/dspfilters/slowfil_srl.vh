@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Filename: 	slowfil.v
+// Filename: 	slowfil_srl.v
 //
 // Project:	DSP Filtering Example Project
 //
@@ -78,9 +78,8 @@ module	slowfil_srl(i_clk, i_reset, i_tap_wr, i_tap, i_ce, i_sample, o_ce, o_resu
 	reg	[(TW-1):0]	tapmem	[0:(MEMSZ-1)];	// Coef memory
 	reg signed [(TW-1):0]	tap;		// Value read from coef memory
 
-	//reg	[(LGNTAPS-1):0]	dwidx, didx;	// Data write and read indices
 	reg	[(LGNTAPS-1):0]	tidx;		// Coefficient read index
-	reg	[(IW-1):0]	dsrl	[0:(MEMSZ-1)];	// Data memory
+	reg	[0:(MEMSZ-1)]		dsrl	[(IW-1):0];	// Data memory
 	reg signed [(IW-1):0]	data;		// Data value read from memory
 
 	// Traveling CE values
@@ -100,7 +99,7 @@ module	slowfil_srl(i_clk, i_reset, i_tap_wr, i_tap, i_ce, i_sample, o_ce, o_resu
 	// write of a new tap.  This also means that changing coefficients
 	// will require a reset.
 	generate if (FIXED_TAPS)
-	begin
+	begin : FIXED_TAP_READMEM
 		initial $readmemh(INITIAL_COEFFS, tapmem);
 
 		// Make Verilators -Wall happy
@@ -108,14 +107,14 @@ module	slowfil_srl(i_clk, i_reset, i_tap_wr, i_tap, i_ce, i_sample, o_ce, o_resu
 		wire	[TW:0]	ignored_inputs;
 		assign	ignored_inputs = { i_tap_wr, i_tap };
 		// Verilator lint_on  UNUSED
-	end else begin
+	end else begin : SET_DYNAMIC_TAP_VALUES
 		// Coef memory write index
 		reg	[(LGNTAPS-1):0]	tapwidx;
 
-		initial	tapwidx = 0;
+		initial	tapwidx = 0; // NTAPS[LGNTAPS-1:0]-1;
 		always @(posedge i_clk)
 			if(i_reset)
-				tapwidx <= 0;
+				tapwidx <= 0; // NTAPS[LGNTAPS-1:0]-1;
 			else if (i_tap_wr)
 				tapwidx <= tapwidx + 1'b1;
 
@@ -135,24 +134,14 @@ module	slowfil_srl(i_clk, i_reset, i_tap_wr, i_tap, i_ce, i_sample, o_ce, o_resu
 
 	// Notice how this data writing section is *independent* of the reset,
 	// depending only upon new sample data.
-	//initial	dwidx = 0;
-	//always @(posedge i_clk)
-	//	if (i_ce)
-	//		dwidx <= dwidx + 1'b1;
-	//always @(posedge i_clk)
-	//	if (i_ce)
-	//		dmem[dwidx] <= i_sample;
-    always @(posedge i_clk)
-        if (i_ce)
-            dsrl[0] <= i_sample;
-    generate
-        genvar i;
-        for (i = 1; i < MEMSZ; i=i+1) begin
-        	always @(posedge i_clk)
-                if (i_ce)
-                    dsrl[i] <= dsrl[i-1];
-        end
-    endgenerate
+	generate
+		genvar i;
+		for (i = 0; i < IW; i=i+1) begin
+			always @(posedge i_clk)
+				if (i_ce)
+					dsrl[i] <= { dsrl[i][MEMSZ-2:0], i_sample[i] };
+		end
+	endgenerate
 
 	//
 	//
@@ -188,15 +177,12 @@ module	slowfil_srl(i_clk, i_reset, i_tap_wr, i_tap, i_ce, i_sample, o_ce, o_resu
 		else
 			pre_acc_ce[2:1] <= pre_acc_ce[1:0];
 
-	//initial	didx = 0;
 	initial	tidx = 0;
 	always @(posedge i_clk)
 		if (i_ce)
 		begin
-			//didx <= dwidx;
 			tidx <= 0;
 		end else begin
-			//didx <= didx - 1'b1;
 			tidx <= tidx + 1'b1;
 		end
 
@@ -215,8 +201,13 @@ module	slowfil_srl(i_clk, i_reset, i_tap_wr, i_tap, i_ce, i_sample, o_ce, o_resu
 		tap <= tapmem[tidx[(LGNTAPS-1):0]];
 
 	initial	data = 0;
-	always @(posedge i_clk)
-		data <= dsrl[MEMSZ-1];
+	generate
+	genvar i = 0;
+	for (i=0; i < IW; i=i+1) begin
+		always @(posedge i_clk)
+			data[i] <= dsrl[i][tidx[(LGNTAPS-1):0]];
+	end
+	endgenerate
 
 	// d_ce is valid when the first data from memory is read/valid
 	initial	d_ce = 0;
