@@ -7,13 +7,13 @@ Currently three designs exist:
 - **fastfir_fixedtaps** A 1-output per clock finite impulse response (FIR) filter,
   configured as a 12-bit 128-tap band-pass filter.
 
-- **slowfir_fixedtaps** A 1-output per number-of-taps clocks finite impulse response 
+- **slowfil_fixedtaps** A 1-output per number-of-taps clocks finite impulse response 
   (FIR) filter, configured as a 12-bit 128-tap band-pass filter. This original variant 
   uses a ring-buffer to store all input samples.
 
-- **slowfir_srl_fixedtaps** A 1-output per number-of-taps clocks finite impulse
+- **slowfil_srl_fixedtaps** A 1-output per number-of-taps clocks finite impulse
   response (FIR) filter, configured as a 12-bit 128-tap band-pass filter. This is a
-  modified variant of the original slowfir that uses a shift-register approach to
+  modified variant of the original slowfil that uses a shift-register approach to
   store all input samples.
 
 The 12-bit 128-tap band pass filter has the following performance characteristics:
