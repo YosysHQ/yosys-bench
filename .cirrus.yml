@@ -4,10 +4,9 @@ task:
     cpu: 4
     memory: 16
     dockerfile: .cirrus/Dockerfile.ubuntu16.04
-    
-  permission_script: mkdir reports && chmod +x ./script/database_py.sh && chmod +x ./script/database_html.sh
+  env:
+    GITHUB_TOKEN: ENCRYPTED[c86a89228a6bd63329c6e28f2228d48e79a47a9fa0481d3e15f0f30b0e74fa26b5748afd1e44523e90450d53911e67f4]
+  permission_script: mkdir reports && chmod +x ./script/database_py.sh && chmod +x ./script/database_html.sh && chmod ./cirrus/upload.sh
   small_script: ./script/database_py.sh ./scripts/database_make.py yosys-ice40-lutcount ./verilog/benchmarks_small/ && ./script/database_html.sh && cp ./database/index.html ./reports/benchmarks_small.html
   large_script: ./script/database_py.sh ./scripts/database_make.py yosys-ice40-lutcount ./verilog/benchmarks_small/ && ./script/database_html.sh && cp ./database/index.html ./reports/benchmarks_large.html
-  reports_artifact: 
-    store: always
-    path:  reports
+  push_script:  .cirrus/upload.sh
