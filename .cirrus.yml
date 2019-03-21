@@ -5,17 +5,9 @@ task:
     memory: 16
     dockerfile: .cirrus/Dockerfile.ubuntu16.04
     
-task:
-  name: run-benchmarks
-  depends_on:
-    - build-test-ubuntu1604
-  script:
-    - mkdir reports
-    - chmod +x ./script/database_py.sh
-    - chmod +x ./script/database_html.sh
-    - ./script/database_py.sh ./scripts/database_make.py yosys-ice40-lutcount ./verilog/benchmarks_small/
-    - ./script/database_html.sh
-    - cp ./database/index.html ./reports/benchmarks_small.html
-    - ./script/database_py.sh ./scripts/database_make.py yosys-ice40-lutcount ./verilog/benchmarks_small/
-    - ./script/database_html.sh
-    - cp ./database/index.html ./reports/benchmarks_large.html
+  permission_script: mkdir reports && chmod +x ./script/database_py.sh && chmod +x ./script/database_html.sh
+  small_script: ./script/database_py.sh ./scripts/database_make.py yosys-ice40-lutcount ./verilog/benchmarks_small/ && ./script/database_html.sh && cp ./database/index.html ./reports/benchmarks_small.html
+  large_script: ./script/database_py.sh ./scripts/database_make.py yosys-ice40-lutcount ./verilog/benchmarks_small/ && ./script/database_html.sh && cp ./database/index.html ./reports/benchmarks_large.html
+  reports_artifact: 
+    store: always
+    path:  reports
