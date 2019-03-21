@@ -52,16 +52,19 @@ for dir in sys.argv[2:]:
 # execute all .v or .vhdl scripts specified in the config.json file
 # or if there is no config.json, simply walk the directory.
 for dir in sys.argv[2:]:
-    print(dir)
+    print("Processing directory: " + dir)
     for subdir, dirs, files in os.walk(dir):
-
         # check if there is a config.json file
         configFileName = subdir + "/config.json"
         if (os.path.isfile(configFileName)):
-            print("  Running config " + configFileName)
+            print("  Running config file:" + configFileName)
             with open(configFileName, 'r') as configFile:
-                config = json.load(configFile)
-                executeConfig(celllibpath, shellScriptName, dbpath, subdir, config)
+                try:
+                    config = json.load(configFile)
+                    executeConfig(celllibpath, shellScriptName, dbpath, subdir, config)
+                except ValueError as error:
+                    print("  --- ERROR PARSING CONFIG.JSON ---")
+                    pass
         else:
             for file in files:
                 if (file.endswith(".v")):
