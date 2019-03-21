@@ -8,5 +8,5 @@ task:
     GITHUB_TOKEN: ENCRYPTED[c86a89228a6bd63329c6e28f2228d48e79a47a9fa0481d3e15f0f30b0e74fa26b5748afd1e44523e90450d53911e67f4]
   permission_script: mkdir reports && chmod +x ./scripts/database_make.py && chmod +x ./scripts/database_html.sh && chmod +x .cirrus/upload.sh
   small_script: ./scripts/database_make.py yosys-ice40-lutcount ./verilog/benchmarks_small/ && ./scripts/database_html.sh && cp ./database/index.html ./reports/benchmarks_small.html
-  large_script: ./scripts/database_make.py yosys-ice40-lutcount ./verilog/benchmarks_small/ && ./scripts/database_html.sh && cp ./database/index.html ./reports/benchmarks_large.html
+  large_script: ./scripts/database_make.py yosys-ice40-lutcount ./verilog/benchmarks_large/ && ./scripts/database_html.sh && cp ./database/index.html ./reports/benchmarks_large.html
   push_script:  .cirrus/upload.sh
