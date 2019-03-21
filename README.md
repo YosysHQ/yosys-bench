@@ -32,3 +32,17 @@ Each benchmark produces an entry in the `./database` directory. Running `./scrip
 To add a benchmark, simply create a directory in the `benchmarks_small` or `benchmarks_large` directory, optionally supply a `generate.py` and/or `config.json` and add your HDL files.
 
 Please also add a `README.md` file to your benchmark so others know what it is you are benchmarking.
+
+# The `config.json` file
+The `config.json` file lists the HDL files that you want to benchmark. Each file will be benchmarked separately.
+
+Example:
+
+```
+{
+    "files": 
+    [
+        "sddac.v", "sddac2.v"
+    ]
+}
+```
