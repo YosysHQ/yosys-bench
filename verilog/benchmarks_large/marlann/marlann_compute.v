@@ -542,7 +542,6 @@ module marlann_compute #(
 	end
 endmodule
 
-//(* blackbox *)
 module marlann_compute_mul2 (
 	input         clock,
 	input  [15:0] A, B,
