@@ -19,7 +19,7 @@ estimating the overall performance of the tools.
 
 Benchmarks are processed by the ```./scripts/database_make.py``` Python3 script. The script performs the following steps:
 
-* It traverses the enters the given directories and executes the `generate.py` Python script, if there is one. These scripts generate Verilog or VHDL files for some testbenches. 
+* It traverses the given directories and executes the `generate.py` Python script, if there is one. These scripts generate Verilog or VHDL files for some testbenches. 
 * It checks for a `config.json` file. If there is one, it loads the configuration and reads which HDL files it should use for the testbench.
 * If there wasn't a `config.json` file, it simply uses all the `.v` and `.vhdl` files it can find for the testbench.
 
