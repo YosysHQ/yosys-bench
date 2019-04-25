@@ -36,8 +36,8 @@ endmodule
 
 
 if __name__ == "__main__":
-    for N in [2,3,4,5] + [7,8,9] + [15,16,17] + [31,32,33]:
-        for W in [1,2,3,4,5,8]:
+    for N in [63,64,65] + [127,128,129] + [255,256,257]:
+        for W in [8,16,32]:
             gen_mux_index(N,W)
             gen_mux_case(N,W)
             gen_mux_if(N,W)
