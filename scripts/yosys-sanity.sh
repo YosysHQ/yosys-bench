@@ -27,5 +27,6 @@ fi
 echo "hierarchy -check -top $topmodule" >> script.yos
 
 yosys -ql $logfile -p "script $scriptpath/script.yos" >/dev/null
+echo $?
 rm -f $logfile
 rm -f script.yos
