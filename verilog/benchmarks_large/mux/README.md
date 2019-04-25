@@ -1,4 +1,4 @@
-# Small multiplexers
+# Large multiplexers
 
 The python script generates a selection of multiplexer descriptions, using variable 
 length index (e.g. `assign a = b [c]`) as well as `case` and `if`-`else if`-`else` 
