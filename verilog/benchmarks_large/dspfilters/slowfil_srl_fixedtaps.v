@@ -17,7 +17,7 @@ module  slowfil_srl_fixedtaps(i_clk, i_reset, i_tap_wr, i_tap, i_ce, i_sample, o
 
 	// This is a modified variant of the original slowfil that uses a
 	// shift-register approach to store all input samples
-	slowfil_srl #(.FIXED_TAPS(1), .NTAPS(NTAPS), .IW(IW), .INITIAL_COEFFS("taps.hex")) fir (.i_clk(i_clk), .i_reset(i_reset), .i_tap_wr(i_tap_wr), .i_tap(i_tap), .i_ce(i_ce), .i_sample(i_sample), .o_ce(o_ce), .o_result(o_result));
+	slowfil_srl #(.FIXED_TAPS(1), .NTAPS(NTAPS), .IW(IW), .TW(TW), .INITIAL_COEFFS("taps.hex")) fir (.i_clk(i_clk), .i_reset(i_reset), .i_tap_wr(i_tap_wr), .i_tap(i_tap), .i_ce(i_ce), .i_sample(i_sample), .o_ce(o_ce), .o_result(o_result));
 endmodule
 
 `include "slowfil_srl.vh"
