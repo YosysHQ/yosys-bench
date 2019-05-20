@@ -25,10 +25,10 @@ module sddac(clk, rst_n, sig_in, sd_out);
     reg signed [19:0] state2 = 0;       // Q(1,19)
     reg signed [16:0] state1_in;        // Q(0,17)
     reg signed [18:0] state2_in;        // Q(0,19)
-    reg signed [20:0] quant_in = 0;     // Q(2,19)
+    reg signed [20:0] quant_in;         // Q(2,19)
     reg signed [16:0] qq;
     reg        [7:0]  lfsr_reg = 0;
-    reg               quantizer = 0;
+    reg               quantizer;
     wire lfsr_fb;
 
     // linear feedback shift register feedback
@@ -38,13 +38,12 @@ module sddac(clk, rst_n, sig_in, sd_out);
     always @(*)
     begin
         `ifdef DEBUG_SDDAC
-        qq <= $signed(quantizer ? -17'h8000 : 17'h8000);
+        qq = $signed(quantizer ? -17'h8000 : 17'h8000);
         `endif
-        state1_in <= sig_in - $signed(quantizer ? -17'h8000 : 17'h8000);        // Q(-1,17) - Q(0,17) -> Q(0,17)
-        state2_in <= state1 - $signed(quantizer ? -19'h10000 : 19'h10000);      // Q(-1,19) - Q(0,19) -> Q(0,19)
-        quant_in  <= state2 + $signed(lfsr_fb ? -21'h4000 : 21'h4000);
-        //quant_in <= state2 + $signed(21'h0);
-        quantizer <= quant_in[20];
+        quant_in  = state2 + $signed(lfsr_fb ? -21'h4000 : 21'h4000);
+        quantizer = quant_in[20];
+        state1_in = sig_in - $signed(quantizer ? -17'h8000 : 17'h8000);        // Q(-1,17) - Q(0,17) -> Q(0,17)
+        state2_in = state1 - $signed(quantizer ? -19'h10000 : 19'h10000);      // Q(-1,19) - Q(0,19) -> Q(0,19)
     end
 
     // clocked process

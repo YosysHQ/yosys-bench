@@ -17,7 +17,7 @@ else
     topmodule=$( basename -s .v "$1")
     echo "read -vlog2k $1" > $tmpdir/script.ys
 fi
-echo "synth_ice40 -top $topmodule" >> $tmpdir/script.ys
+echo "synth_ice40 -top $topmodule $EXTRA_FLAGS" >> script.yos
 
 # run tools
 yosys -ql $logfile -p "script $tmpdir/script.ys" >/dev/null

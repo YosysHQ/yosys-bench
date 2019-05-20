@@ -23,8 +23,8 @@ plt.figure(1)
 plt.title("SDDAC output spectrum")
 plt.xlabel("Frequency")
 plt.ylabel("Signal Amplitude (dB)")
-
+plt.grid()
 freqaxis = np.linspace(0,N//2-1,N//2)/N
-plt.semilogx(freqaxis, 20.0*np.log10(sdout_fft[:N // 2]))
+plt.semilogx(freqaxis, 20.0*np.log10(sdout_fft[:N // 2]/(N/4)))
 
 plt.show()
