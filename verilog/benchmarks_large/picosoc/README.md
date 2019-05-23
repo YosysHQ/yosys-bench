@@ -12,3 +12,6 @@ There are three cores: small, regular and large.
 
 - **PicoRV32 (large):** The `picorv32` module with enabled PCPI, IRQ, MUL,
   DIV, BARREL_SHIFTER, and COMPRESSED_ISA features.
+
+- **PicoSoC:** The `picosoc` module with `picorv32`, flash, UART, and SRAM
+  IP on a simple System-on-Chip.

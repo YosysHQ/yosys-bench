@@ -1,0 +1,1 @@
+picorv32/scripts/vivado/synth_area_top.v
