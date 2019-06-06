@@ -42,14 +42,17 @@ def _gen_mux_if_bal_rec(f, N, depth):
         print("    {0}if (s[{1}] == 1'b0)".format(indent, depth), file=f)
         i = ceil(log2(len(N))) - 1
         _gen_mux_if_bal_rec(f, N[:2**i], depth+1)
-        print("    {0}else".format(indent), file=f)
-        _gen_mux_if_bal_rec(f, N[2**i:], depth+1)
+        if N[2**i:]:
+            print("    {0}else".format(indent), file=f)
+            _gen_mux_if_bal_rec(f, N[2**i:], depth+1)
 
 def gen_mux_if_bal(N,W):
     with open("mux_if_bal_%d_%d.v" % (N,W), "w") as f:
         print("""
 module mux_if_bal_{0}_{1} #(parameter N={0}, parameter W={1}) (input [N*W-1:0] i, input [$clog2(N)-1:0] s, output reg [W-1:0] o);
-always @*""".format(N,W), file=f)
+always @* begin""".format(N,W), file=f)
+        print("    o <= {{W{{1'bx}}}};", file=f)
         _gen_mux_if_bal_rec(f, range(N), 0)
-        print("""endmodule
+        print("""end
+endmodule
 """, file=f)
