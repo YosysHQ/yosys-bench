@@ -1,4 +1,4 @@
-from math import log2, floor
+from math import log2, ceil
 
 def gen_mux_index(N,W):
     with open("mux_index_%d_%d.v" % (N,W), "w") as f:
@@ -40,7 +40,7 @@ def _gen_mux_if_bal_rec(f, N, depth):
         print("    {0}o <= i[{1}*W+:W];".format(indent, N[0]), file=f)
     else:
         print("    {0}if (s[{1}] == 1'b0)".format(indent, depth), file=f)
-        i = floor(log2(len(N))) - 1
+        i = ceil(log2(len(N))) - 1
         _gen_mux_if_bal_rec(f, N[:2**i], depth+1)
         print("    {0}else".format(indent), file=f)
         _gen_mux_if_bal_rec(f, N[2**i:], depth+1)
