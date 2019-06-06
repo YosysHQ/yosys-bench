@@ -7,4 +7,5 @@ if __name__ == "__main__":
         for W in [1,2,3,4,5,8]:
             gen_mux_index(N,W)
             gen_mux_case(N,W)
-            gen_mux_if(N,W)
+            gen_mux_if_bal(N,W)
+            gen_mux_if_unbal(N,W)
