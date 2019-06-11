@@ -9,3 +9,6 @@ There is one core currently.
 
 - **SOC_ETHERNETSOC_ARTY_LM32:** LiteX SoC generated for the ARTY target,
   with Ethernet, and the LatticeMico32 CPU.
+
+- **SOC_ETHERNETSOC_KC705_ROCKET:** LiteX SoC generated for the KC705 target,
+  with Ethernet, and the Rocket CPU.
