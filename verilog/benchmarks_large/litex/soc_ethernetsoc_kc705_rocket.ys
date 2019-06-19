@@ -1,6 +1,6 @@
 read_verilog soc_ethernetsoc_kc705_rocket.v
+setattr -mod -set top 1 top
 rename top soc_ethernetsoc_kc705_rocket
-setattr -mod -set top 1 soc_ethernetsoc_kc705_rocket
 read_verilog rocket-litex-verilog/vsrc/plusarg_reader.v
 read_verilog rocket-litex-verilog/generated-src/freechips.rocketchip.system.LitexConfig.v
 #read_verilog rocket-litex-verilog/vsrc/EICG_wrapper.v
