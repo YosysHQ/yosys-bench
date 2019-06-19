@@ -1,0 +1,9 @@
+[submodule "verilog/benchmarks_large/litex/VexRiscv-verilog"]
+	path = verilog/benchmarks_large/litex/VexRiscv-verilog
+	url = https://github.com/enjoy-digital/VexRiscv-verilog
+[submodule "verilog/benchmarks_large/litex/lm32"]
+	path = verilog/benchmarks_large/litex/lm32
+	url = https://github.com/m-labs/lm32
+[submodule "verilog/benchmarks_large/litex/rocket-litex-verilog"]
+	path = verilog/benchmarks_large/litex/rocket-litex-verilog
+	url = https://github.com/enjoy-digital/rocket-litex-verilog
