@@ -1,0 +1,9 @@
+read_verilog soc_ethernetsoc_arty_rocket.v
+read_verilog rocket-litex-verilog/vsrc/plusarg_reader.v
+read_verilog rocket-litex-verilog/generated-src/freechips.rocketchip.system.LitexConfig.v
+#read_verilog rocket-litex-verilog/vsrc/EICG_wrapper.v
+read_verilog -D XILINX EICG_wrapper.v
+read_verilog rocket-litex-verilog/generated-src/freechips.rocketchip.system.LitexConfig.behav_srams.v
+read_verilog rocket-litex-verilog/vsrc/AsyncResetReg.v
+setattr -mod -set top 1 top
+rename top soc_ethernetsoc_arty_rocket
