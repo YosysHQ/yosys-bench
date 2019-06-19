@@ -1,2 +1,0 @@
-read_verilog soc_ethernetsoc_ac701_vexriscv.v
-read_verilog VexRiscv-verilog/VexRiscv.v
