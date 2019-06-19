@@ -1,4 +1,0 @@
-read_verilog soc_ethernetsoc_ac701_vexriscv.v
-read_verilog VexRiscv-verilog/VexRiscv.v
-setattr -mod -set top 1 top
-rename top soc_ethernetsoc_ac701_vexriscv
