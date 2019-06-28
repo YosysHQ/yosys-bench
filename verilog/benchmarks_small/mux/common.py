@@ -3,6 +3,7 @@ from math import log2, ceil
 def gen_mux_index(N,W):
     with open("mux_index_%d_%d.v" % (N,W), "w") as f:
         print("""
+(* top *)
 module mux_index_{0}_{1} #(parameter N={0}, parameter W={1}) (input [N*W-1:0] i, input [$clog2(N)-1:0] s, output [W-1:0] o);
 assign o = i[s*W+:W];
 endmodule
@@ -11,6 +12,7 @@ endmodule
 def gen_mux_case(N,W):
     with open("mux_case_%d_%d.v" % (N,W), "w") as f:
         print("""
+(* top *)
 module mux_case_{0}_{1} #(parameter N={0}, parameter W={1}) (input [N*W-1:0] i, input [$clog2(N)-1:0] s, output reg [W-1:0] o);
 always @*
     case (s)""".format(N,W), file=f)
@@ -24,6 +26,7 @@ endmodule
 def gen_mux_if_unbal(N,W):
     with open("mux_if_unbal_%d_%d.v" % (N,W), "w") as f:
         print("""
+(* top *)
 module mux_if_unbal_{0}_{1} #(parameter N={0}, parameter W={1}) (input [N*W-1:0] i, input [$clog2(N)-1:0] s, output reg [W-1:0] o);
 always @*""".format(N,W), file=f)
         print("    if (s == 0) o <= i[0*W+:W];", file=f)
@@ -49,6 +52,7 @@ def _gen_mux_if_bal_rec(f, N, depth):
 def gen_mux_if_bal(N,W):
     with open("mux_if_bal_%d_%d.v" % (N,W), "w") as f:
         print("""
+(* top *)
 module mux_if_bal_{0}_{1} #(parameter N={0}, parameter W={1}) (input [N*W-1:0] i, input [$clog2(N)-1:0] s, output reg [W-1:0] o);
 always @* begin""".format(N,W), file=f)
         pad = (2 ** int(ceil(log2(N)))) - N
