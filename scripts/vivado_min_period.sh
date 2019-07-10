@@ -2,23 +2,22 @@
 
 # Adapted from https://github.com/cliffordwolf/picorv32/blob/d046cbfa4986acb50ef6b6e5ff58e9cab543980b/scripts/vivado/tabtest.sh
 
-### Yosys to synthesise to EDIF, Vivado to place-and-route ###
-
-# - Override Yosys executable by setting environment variable YOSYS (defaults to 'yosys')
-# - Override Vivado executable by setting environment variable VIVADO (defaults to 'vivado')
+# - If YOSYS environment variable is set, Yosys will be used for synthesis
+#   (otherwise Vivado will be used)
+# - When using Yosys for synthesis, environment variable YOSYS_SYNTH should be set
+#   to the desired synthesis command (e.g. 'synth_xilinx')
+# - Vivado executable can be set using environment variable VIVADO (defaults to 'vivado')
 # - Any top-level port matching regex '.*cl(oc)?k.*' is interpreted to be a clock
 # - Vivado executed in single threaded mode for deterministic behaviour
 # - Vivado executed in 'out of context' mode to eliminate effect of I/O
 # - Binary search to find minimum clock period (within 100ps) with positive slack
 
 set -e
-path="$1"
+path=`readlink -f "$1"`
 dev="$2"
 grade="$3"
-cmd="$4"
 ip="$(basename -- ${path%.*})"
 
-YOSYS=${YOSYS:-yosys}
 VIVADO=${VIVADO:-vivado}
 
 # rm -rf tab_${ip}_${dev}_${grade}
@@ -46,53 +45,78 @@ synth_case() {
 		xcvup) xl_device="xcvu3p-ffvc1517-${grade}-e" ;;
 	esac
 
-	if [ -f ${ip}.edif ]; then
-		echo "Reusing cached tab_${ip}_${dev}_${grade}/${ip}.edif."
-	else
-		if [ -f "../$(dirname ${path})/${ip}.ys" ]; then
-			echo "script ${ip}.ys" > ${ip}.ys
-		else
-			if [ ${path:-5} == ".vhdl" ]
-			then
-			    echo "read -vhdl $(basename ${path})" > ${ip}.ys
-			else
-			    echo "read -vlog2k $(basename ${path})" > ${ip}.ys
-			fi
-		fi
-
-		pwd=$PWD
-		cat >> ${ip}.ys <<- EOT
-			${cmd}
-			write_verilog -noexpr -norename ${pwd}/${ip}_syn.v
-		EOT
-
-		echo "Running tab_${ip}_${dev}_${grade}/${ip}.ys.."
-		pushd ../$(dirname ${path}) > /dev/null
-		if ! ${YOSYS} -l ${pwd}/yosys.log ${pwd}/${ip}.ys > /dev/null 2>&1; then
-			cat ${pwd}/yosys.log
-			exit 1
-		fi
-		popd > /dev/null
-		mv yosys.log yosys.txt
-	fi
-
 	cat > test_${1}.tcl <<- EOT
 		set_param general.maxThreads 1
 		set_property IS_ENABLED 0 [get_drc_checks {PDRC-43}]
-		read_edif ${ip}.edif
 	EOT
-	if [ -f "../$(dirname ${path})/${ip}.xdc" ]; then
-		echo "read_xdc ../$(dirname ${path})/${ip}.xdc" >> test_${1}.tcl
+
+	pwd=$PWD
+	if [ -z "$YOSYS" ]; then
+		cat > test_${1}.tcl <<- EOT
+			cd $(dirname ${path})
+		EOT
+		if [ -f $(dirname ${path})/${ip}_vivado.tcl ]; then
+			cat >> test_${1}.tcl <<- EOT
+				source ${ip}_vivado.tcl
+				if {[get_property TOP [current_fileset]] eq ""} {
+					set_property TOP [lindex [find_top] 0] [current_fileset]
+				}
+			EOT
+		else
+			cat >> test_${1}.tcl <<- EOT
+				read_verilog $(basename ${path})
+				set_property TOP [lindex [find_top] 0] [current_fileset]
+			EOT
+		fi
+		cat >> test_${1}.tcl <<- EOT
+			cd ${PWD}
+			read_xdc test_${1}.xdc
+			synth_design -part ${xl_device} -mode out_of_context
+			opt_design -directive Explore
+		EOT
+
 	else
-		echo "read_xdc test_${1}.xdc" >> test_${1}.tcl
-		cat > test_${1}.xdc <<- EOT
-			create_clock -period ${speed:0: -1}.${speed: -1} [get_ports -nocase -regexp .*cl(oc)?k.*]
+		if [ -f ${ip}.edif ]; then
+			echo "Reusing cached tab_${ip}_${dev}_${grade}/${ip}.edif."
+		else
+			if [ -f "$(dirname ${path})/${ip}.ys" ]; then
+				echo "script ${ip}.ys" > ${ip}.ys
+			else
+				if [ ${path:-5} == ".vhdl" ]
+				then
+				    echo "read -vhdl $(basename ${path})" > ${ip}.ys
+				else
+				    echo "read -vlog2k $(basename ${path})" > ${ip}.ys
+				fi
+			fi
+
+			cat >> ${ip}.ys <<- EOT
+				${YOSYS_SYNTH}
+				write_verilog -noexpr -norename ${pwd}/${ip}_syn.v
+			EOT
+
+			echo "Running tab_${ip}_${dev}_${grade}/${ip}.ys.."
+			pushd $(dirname ${path}) > /dev/null
+			if ! ${YOSYS} -l ${pwd}/yosys.log ${pwd}/${ip}.ys > /dev/null 2>&1; then
+				cat ${pwd}/yosys.log
+				exit 1
+			fi
+			popd > /dev/null
+			mv yosys.log yosys.txt
+		fi
+
+		cat >> test_${1}.tcl <<- EOT
+			read_edif ${ip}.edif
+			read_xdc test_${1}.xdc
+			link_design -part ${xl_device} -mode out_of_context -top ${ip}
 		EOT
 	fi
+
+	cat > test_${1}.xdc <<- EOT
+		create_clock -period ${speed:0: -1}.${speed: -1} [get_ports -nocase -regexp .*cl(oc)?k.*]
+	EOT
 	cat >> test_${1}.tcl <<- EOT
-		link_design -part ${xl_device} -mode out_of_context -top ${ip}
 		report_design_analysis
-		#opt_design -directive Explore
 		place_design -directive Explore
 		route_design -directive Explore
 		report_utilization
@@ -106,10 +130,6 @@ synth_case() {
 		exit 1
 	fi
 	mv test_${1}.log test_${1}.txt
-
-	if [ -f "../$(dirname ${path})/${ip}.xdc" ]; then
-		exit 0
-	fi
 }
 
 got_violated=false
