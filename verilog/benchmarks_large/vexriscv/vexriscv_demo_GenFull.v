@@ -1056,7 +1056,7 @@ module DataCache (
 
 endmodule
 
-module \vexriscv.demo.GenFull (
+module vexriscv_demo_GenFull (
       input   timerInterrupt,
       input   externalInterrupt,
       input   softwareInterrupt,
