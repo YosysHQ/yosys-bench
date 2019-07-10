@@ -2,7 +2,7 @@
 
 Source: https://github.com/cliffordwolf/picorv32/tree/v1.0
 
-There are three cores: small, regular and large.
+There are four cores: small, regular, large, and SoC.
 
 - **PicoRV32 (small):** The `picorv32` module without counter instructions,
   without two-stage shifts, with externally latched `mem_rdata`, and without
