@@ -52,7 +52,7 @@ synth_case() {
 
 	pwd=$PWD
 	if [ -z "$YOSYS" ]; then
-		cat > test_${1}.tcl <<- EOT
+		cat >> test_${1}.tcl <<- EOT
 			cd $(dirname ${path})
 		EOT
 		if [ -f $(dirname ${path})/${ip}_vivado.tcl ]; then
