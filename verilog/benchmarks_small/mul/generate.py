@@ -3,9 +3,9 @@
 ARange = [4,8,16,24,25]
 BRange = [2,4,8,16,18]
 rtl = """(* top *)
-module mul_{0}_{1}_{2}_{3} #(parameter AW={0}, BW={1}, AREG={4}, BREG={5}, PREG={6}) (input clk, CEA, CEB, CEP, input [AW-1:0] A, input [BW-1:0] B, output reg [AW+BW-1:0] P);
-reg [AW-1:0] Ar;
-reg [BW-1:0] Br;
+module mul_{0}_{1}_{2}_{3} #(parameter AW={0}, BW={1}, AREG={4}, BREG={5}, PREG={6}) (input clk, CEA, CEB, CEP, input signed [AW-1:0] A, input signed [BW-1:0] B, output reg signed [AW+BW-1:0] P);
+reg signed [AW-1:0] Ar;
+reg signed [BW-1:0] Br;
 generate
     if (AREG) begin
         always @(posedge clk) if ({7}) Ar <= A;
