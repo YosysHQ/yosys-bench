@@ -34,6 +34,15 @@ def powerset(iterable):
 
 for A in ARange:
     for B in BRange:
+        # Unless both A and B are signed, an unsigned
+        #   multiplier will be inferred.
+        #   Since Xilinx DSPs are signed only, transforming
+        #   unsigned -> signed requires an extra sign bit
+        #   that could push us over the edge to using
+        #   another DSP48E1
+        if ('s' in A) != ('s' in B):
+            if A.rstrip('s') == '25': continue
+            if B.rstrip('s') == '18': continue
         for R in map(lambda i:''.join(i), powerset("ABP")): # Register existence
             for E in map(lambda i:''.join(i), powerset(R)): # Enable
                 with open("mul_%s_%s_%s_%s.v" % (A,B,R,E), "w") as f:
