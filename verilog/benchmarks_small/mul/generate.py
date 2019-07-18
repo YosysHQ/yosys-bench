@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
-ARange = ['4','4s','8','8s','16','16s','24','24s','25s']
-BRange = ['2','2s','4','4s','8','8s','16','16s','17','18s']
+ARange = ['16','16s','24','24s','32','32s','48','48s','64','64s','128','128s']
+BRange = ['2','2s','4','4s','8','8s','16','16s','24','24s','32','32s','48','48s']
 rtl = """(* top *)
 module mul_{0}_{1}_{2}_{3} #(parameter AW={4}, BW={5}, AREG={6}, BREG={7}, PREG={8}) (input clk, CEA, CEB, CEP, input {9}[AW-1:0] A, input {10}[BW-1:0] B, output reg {11}[AW+BW-1:0] P);
 reg {9}[AW-1:0] Ar;
@@ -34,15 +34,6 @@ def powerset(iterable):
 
 for A in ARange:
     for B in BRange:
-        # Unless both A and B are signed, an unsigned
-        #   multiplier will be inferred.
-        #   Since Xilinx DSPs are signed only, transforming
-        #   unsigned -> signed requires an extra sign bit
-        #   that could push us over the edge to using
-        #   another DSP48E1
-        if ('s' in A) != ('s' in B):
-            if A.rstrip('s') == '25': continue
-            if B.rstrip('s') == '18': continue
         for R in map(lambda i:''.join(i), powerset("ABP")): # Register existence
             for E in map(lambda i:''.join(i), powerset(R)): # Enable
                 with open("mul_%s_%s_%s_%s.v" % (A,B,R,E), "w") as f:
