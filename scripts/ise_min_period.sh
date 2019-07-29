@@ -33,38 +33,83 @@ synth_case() {
 	esac
 
 	pwd=$PWD
-	if [ -f "../$(dirname ${path})/${ip}.prj" ]; then
-		echo "run -ifn "$(dirname ${path})/${ip}.prj" -ifmt mixed -ofn ${pwd}/test_${1}.ngc -ofmt NGC -p ${xl_device} -uc ${pwd}/test_${1}.xcf -iobuf no" > test_${1}.xst
-	else
-		cat > test_${1}.prj <<- EOT
-			verilog work $(basename ${path})
-		EOT
-		echo "run -ifn ${pwd}/test_${1}.prj -ifmt mixed -top ${ip} -ofn ${pwd}/test_${1}.ngc -ofmt NGC -p ${xl_device} -uc ${pwd}/test_${1}.xcf -iobuf no" > test_${1}.xst
-        fi
-	cat > test_${1}.xcf <<- EOT
-		NET "$(<$(dirname ${path})/${ip}.clock)" TNM_NET = clk;
-		TIMESPEC TS_clk = PERIOD "clk" ${speed:0: -1}.${speed: -1} ns;
-		BEGIN MODEL ${ip}
-			NET "$(<$(dirname ${path})/${ip}.clock)" BUFFER_TYPE = BUFG;
-		END;
-	EOT
 	cat > test_${1}.ucf <<- EOT
 		NET "$(<$(dirname ${path})/${ip}.clock)" TNM_NET = clk;
 		TIMESPEC TS_clk = PERIOD "clk" ${speed:0: -1}.${speed: -1} ns;
 	EOT
 
-	echo "Running tab_${ip}_${dev}_${grade}/test_${1}.."
-	pushd $(dirname ${path}) > /dev/null
-	if ! xst -ifn ${pwd}/test_${1}.xst -ofn ${pwd}/test_${1}.srp -intstyle xflow > /dev/null 2>&1; then
-		cat ${pwd}/test_${1}.srp
-		exit 1
-	fi
-	popd > /dev/null
+	if [ -z "$YOSYS" ]; then
+		if [ -f "../$(dirname ${path})/${ip}.prj" ]; then
+			echo "run -ifn "$(dirname ${path})/${ip}.prj" -ifmt mixed -ofn ${pwd}/test_${1}.ngc -ofmt NGC -p ${xl_device} -uc ${pwd}/test_${1}.xcf -iobuf no" > test_${1}.xst
+		else
+			cat > test_${1}.prj <<- EOT
+				verilog work $(basename ${path})
+			EOT
+			echo "run -ifn ${pwd}/test_${1}.prj -ifmt mixed -top ${ip} -ofn ${pwd}/test_${1}.ngc -ofmt NGC -p ${xl_device} -uc ${pwd}/test_${1}.xcf -iobuf no" > test_${1}.xst
+		fi
+		cat > test_${1}.xcf <<- EOT
+			NET "$(<$(dirname ${path})/${ip}.clock)" TNM_NET = clk;
+			TIMESPEC TS_clk = PERIOD "clk" ${speed:0: -1}.${speed: -1} ns;
+			BEGIN MODEL ${ip}
+				NET "$(<$(dirname ${path})/${ip}.clock)" BUFFER_TYPE = BUFG;
+			END;
+		EOT
 
-	if ! ngdbuild test_${1}.ngc test_${1}.ngd -uc test_${1}.ucf -intstyle xflow > /dev/null 2>&1; then
-		cat test_${1}.bld
-		exit 1
+		echo "Running tab_${ip}_${dev}_${grade}/test_${1}.."
+		pushd $(dirname ${path}) > /dev/null
+		if ! xst -ifn ${pwd}/test_${1}.xst -ofn ${pwd}/test_${1}.srp -intstyle xflow > /dev/null 2>&1; then
+			cat ${pwd}/test_${1}.srp
+			exit 1
+		fi
+		popd > /dev/null
+
+		if ! ngdbuild test_${1}.ngc test_${1}.ngd -uc test_${1}.ucf -intstyle xflow -p ${xl_device} > /dev/null 2>&1; then
+			cat test_${1}.bld
+			exit 1
+		fi
+	else
+		if [ -f ${ip}.edif ]; then
+			echo "Reusing cached tab_${ip}_${dev}_${grade}/${ip}.edif."
+		else
+			if [ -f "$(dirname ${path})/${ip}.ys" ]; then
+				echo "script ${ip}.ys" > ${ip}.ys
+			else
+				if [ ${path:-5} == ".vhdl" ]
+				then
+				    echo "read -vhdl $(basename ${path})" > ${ip}.ys
+				else
+				    echo "read -vlog2k $(basename ${path})" > ${ip}.ys
+				fi
+			fi
+
+			cat >> ${ip}.ys <<- EOT
+				${YOSYS_SYNTH}
+				#iopadmap -bits -outpad OBUF I:O -inpad IBUF O:I
+				write_edif -pvector bra ${pwd}/${ip}.edif
+				write_verilog -noexpr -norename ${pwd}/${ip}_syn.v
+			EOT
+
+			echo "Running tab_${ip}_${dev}_${grade}/${ip}.ys.."
+			pushd $(dirname ${path}) > /dev/null
+			if ! ${YOSYS} -l ${pwd}/yosys.log ${pwd}/${ip}.ys > /dev/null 2>&1; then
+				cat ${pwd}/yosys.log
+				exit 1
+			fi
+			popd > /dev/null
+			mv yosys.log yosys.txt
+		fi
+
+		echo "Running tab_${ip}_${dev}_${grade}/test_${1}.."
+		if ! edif2ngd ${ip}.edif > ${ip}.edif2ngd 2>&1; then
+			cat ${ip}.edif2ngd
+			exit 1
+		fi
+		if ! ngdbuild ${ip}.ngo test_${1}.ngd -uc test_${1}.ucf -intstyle xflow -p ${xl_device} > /dev/null 2>&1; then
+			cat test_${1}.bld
+			exit 1
+		fi
 	fi
+
 	if ! map test_${1} -intstyle xflow -u > /dev/null 2>&1; then
 		cat test_${1}.mrp
 		exit 1
@@ -78,8 +123,7 @@ synth_case() {
 		exit 1
 	fi
 
-	> test_${1}.txt
-	cat test_${1}.srp >> test_${1}.txt
+	rm -f test_${1}.txt
 	cat test_${1}.bld >> test_${1}.txt
 	cat test_${1}.mrp >> test_${1}.txt
 	cat test_${1}_par.par >> test_${1}.txt
