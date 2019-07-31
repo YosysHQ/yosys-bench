@@ -36,17 +36,23 @@ synth_case() {
 	cat > test_${1}.ucf <<- EOT
 		NET "$(<$(dirname ${path})/${ip}.clock)" TNM_NET = clk;
 		TIMESPEC TS_clk = PERIOD "clk" ${speed:0: -1}.${speed: -1} ns;
+		PIN "BUFG.O" CLOCK_DEDICATED_ROUTE = FALSE;
 	EOT
+	if [ -f "$(dirname ${path})/${ip}.top" ]; then
+		TOP=$(<$(dirname ${path})/${ip}.top)
+	else
+		TOP=${ip}
+	fi
 
 	if [ -z "$YOSYS" ]; then
-		if [ -f "../$(dirname ${path})/${ip}.prj" ]; then
-			echo "run -ifn "$(dirname ${path})/${ip}.prj" -ifmt mixed -ofn ${pwd}/test_${1}.ngc -ofmt NGC -p ${xl_device} -uc ${pwd}/test_${1}.xcf -iobuf no" > test_${1}.xst
+		if [ -f "$(dirname ${path})/${ip}_ise.prj" ]; then
+			cp "$(dirname ${path})/${ip}_ise.prj" test_${1}.prj
 		else
 			cat > test_${1}.prj <<- EOT
 				verilog work $(basename ${path})
 			EOT
-			echo "run -ifn ${pwd}/test_${1}.prj -ifmt mixed -top ${ip} -ofn ${pwd}/test_${1}.ngc -ofmt NGC -p ${xl_device} -uc ${pwd}/test_${1}.xcf -iobuf no" > test_${1}.xst
 		fi
+		echo "run -ifn ${pwd}/test_${1}.prj -ifmt mixed -top ${TOP} -ofn ${pwd}/test_${1}.ngc -ofmt NGC -p ${xl_device} -uc ${pwd}/test_${1}.xcf -iobuf no" > test_${1}.xst
 		cat > test_${1}.xcf <<- EOT
 			NET "$(<$(dirname ${path})/${ip}.clock)" TNM_NET = clk;
 			TIMESPEC TS_clk = PERIOD "clk" ${speed:0: -1}.${speed: -1} ns;
@@ -111,6 +117,9 @@ synth_case() {
 	fi
 
 	if ! map test_${1} -intstyle xflow -u > /dev/null 2>&1; then
+		if grep -q '^ERROR:PhysDesignRules:2449 ' test_${1}.mrp; then
+			return
+		fi
 		cat test_${1}.mrp
 		exit 1
 	fi
@@ -137,7 +146,7 @@ countdown=2
 while [ $countdown -gt 0 ]; do
 	synth_case $speed
 
-	if grep -q '^Slack:\s\+-[0-9\.]\+ns (requirement' test_${speed}.txt; then
+	if grep -q '^ERROR:PhysDesignRules:2449 ' test_${speed}.mrp || grep -q '^Slack:\s\+-[0-9\.]\+ns (requirement' test_${speed}.txt; then
 		echo "        tab_${ip}_${dev}_${grade}/test_${speed} VIOLATED"
 		[ $got_met = true ] && step=$((step / 2))
 		speed=$((speed + step))
