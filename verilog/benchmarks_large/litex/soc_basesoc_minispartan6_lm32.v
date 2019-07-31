@@ -4688,10 +4688,14 @@ PLL_ADV #(
 	.REL(1'd0),
 	.RST(1'd0),
 	.CLKFBOUT(pll_fb),
-	.CLKOUT0(pll[0]),
-	.CLKOUT1(pll[1]),
-	.CLKOUT2(pll[2]),
-	.CLKOUT3(pll[3]),
+	// Presence of these dangling port connections
+	//   will cause a Yosys EDIF to fail when imported
+	//   into ISE due to its belief that these signals
+	//   are driving a BUFG
+	//.CLKOUT0(pll[0]),
+	//.CLKOUT1(pll[1]),
+	//.CLKOUT2(pll[2]),
+	//.CLKOUT3(pll[3]),
 	.CLKOUT4(pll[4]),
 	.CLKOUT5(pll[5]),
 	.LOCKED(pll_lckd)
@@ -4707,20 +4711,22 @@ BUFG BUFG_1(
 	.O(sys_ps_clk)
 );
 
-ODDR2 #(
-	.DDR_ALIGNMENT("NONE"),
-	.INIT(1'd0),
-	.SRTYPE("SYNC")
-) ODDR2 (
-	.C0(sys_clk),
-	.C1((~sys_clk)),
-	.CE(1'd1),
-	.D0(1'd0),
-	.D1(1'd1),
-	.R(1'd0),
-	.S(1'd0),
-	.Q(sdram_clock)
-);
+// Since we are not inserting IOBs, using this primitive
+//   causes a packing/DRC error, so comment out for now
+//ODDR2 #(
+//	.DDR_ALIGNMENT("NONE"),
+//	.INIT(1'd0),
+//	.SRTYPE("SYNC")
+//) ODDR2 (
+//	.C0(sys_clk),
+//	.C1((~sys_clk)),
+//	.CE(1'd1),
+//	.D0(1'd0),
+//	.D1(1'd1),
+//	.R(1'd0),
+//	.S(1'd0),
+//	.Q(sdram_clock)
+//);
 
 assign sdram_dq = dq_oe ? dq_o : 16'bz;
 assign dq_i = sdram_dq;
