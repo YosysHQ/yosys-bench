@@ -1,0 +1,7 @@
+verilog work soc_basesoc_minispartan6_rocket.v
+verilog work rocket-litex-verilog/vsrc/plusarg_reader.v
+verilog work rocket-litex-verilog/generated-src/freechips.rocketchip.system.LitexConfig.v
+#verilog work rocket-litex-verilog/vsrc/EICG_wrapper.v
+verilog work EICG_wrapper.v
+verilog work rocket-litex-verilog/generated-src/freechips.rocketchip.system.LitexConfig.behav_srams.v
+verilog work rocket-litex-verilog/vsrc/AsyncResetReg.v
