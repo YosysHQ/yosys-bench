@@ -1,4 +1,2 @@
-read_verilog soc_basesoc_minispartan6_vexriscv.v
+read_verilog soc_basesoc_minispartan6_vexriscv.v.gz
 read_verilog VexRiscv-verilog/VexRiscv.v
-setattr -mod -set top 1 top
-rename top soc_basesoc_minispartan6_vexriscv

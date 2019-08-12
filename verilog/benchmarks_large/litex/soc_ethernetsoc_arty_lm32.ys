@@ -1,4 +1,4 @@
-read_verilog soc_ethernetsoc_arty_lm32.v
+read_verilog soc_ethernetsoc_arty_lm32.v.gz
 read_verilog -Ilm32/rtl lm32/rtl/lm32_ram.v
 read_verilog -Ilm32/rtl lm32/rtl/lm32_load_store_unit.v
 read_verilog -Ilm32/rtl lm32/rtl/lm32_dp_ram.v
@@ -17,5 +17,3 @@ read_verilog -Ilm32/rtl lm32/rtl/lm32_instruction_unit.v
 read_verilog -Ilm32/rtl lm32/rtl/lm32_icache.v
 read_verilog -Ilm32/rtl lm32/rtl/lm32_mc_arithmetic.v
 read_verilog -Ilm32/rtl lm32/rtl/lm32_shifter.v
-setattr -mod -set top 1 top
-rename top soc_ethernetsoc_arty_lm32
