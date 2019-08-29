@@ -5,4 +5,3 @@ read_verilog rocket-litex-verilog/generated-src/freechips.rocketchip.system.Lite
 read_verilog EICG_wrapper.v
 read_verilog rocket-litex-verilog/generated-src/freechips.rocketchip.system.LitexConfig.behav_srams.v
 read_verilog rocket-litex-verilog/vsrc/AsyncResetReg.v
-set_property top TOP [current_fileset]
