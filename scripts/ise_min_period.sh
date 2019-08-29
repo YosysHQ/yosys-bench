@@ -4,7 +4,9 @@ set -e
 path=`readlink -f "$1"`
 dev="$2"
 grade="$3"
-ip="$(basename -- ${path%.*})"
+ip="$(basename -- ${path})"
+ip=${ip%.gz}
+ip=${ip%.*}
 
 # rm -rf tab_${ip}_${dev}_${grade}
 mkdir -p tab_${ip}_${dev}_${grade}
@@ -36,7 +38,7 @@ synth_case() {
 	cat > test_${1}.ucf <<- EOT
 		NET "$(<$(dirname ${path})/${ip}.clock)" TNM_NET = clk;
 		TIMESPEC TS_clk = PERIOD "clk" ${speed:0: -1}.${speed: -1} ns;
-		PIN "BUFG.O" CLOCK_DEDICATED_ROUTE = FALSE;
+		#PIN "BUFG.O" CLOCK_DEDICATED_ROUTE = FALSE;
 	EOT
 	if [ -f "$(dirname ${path})/${ip}.top" ]; then
 		TOP=$(<$(dirname ${path})/${ip}.top)
@@ -82,16 +84,15 @@ synth_case() {
 			else
 				if [ ${path:-5} == ".vhdl" ]
 				then
+					read_verilog $(basename ${path%.gz})
 				    echo "read -vhdl $(basename ${path})" > ${ip}.ys
 				else
-				    echo "read -vlog2k $(basename ${path})" > ${ip}.ys
+				    echo "read_verilog $(basename ${path})" > ${ip}.ys
 				fi
 			fi
 
 			cat >> ${ip}.ys <<- EOT
 				${YOSYS_SYNTH}
-				#iopadmap -bits -outpad OBUF I:O -inpad IBUF O:I
-				write_edif -pvector bra ${pwd}/${ip}.edif
 				write_verilog -noexpr -norename ${pwd}/${ip}_syn.v
 			EOT
 
