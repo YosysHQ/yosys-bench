@@ -16,7 +16,9 @@ set -e
 path=`readlink -f "$1"`
 dev="$2"
 grade="$3"
-ip="$(basename -- ${path%.*})"
+ip="$(basename -- ${path})"
+ip=${ip%.gz}
+ip=${ip%.*}
 
 VIVADO=${VIVADO:-vivado}
 
@@ -55,23 +57,24 @@ synth_case() {
 		cat >> test_${1}.tcl <<- EOT
 			cd $(dirname ${path})
 		EOT
-		if [ -f $(dirname ${path})/${ip}_vivado.tcl ]; then
-			cat >> test_${1}.tcl <<- EOT
-				source ${ip}_vivado.tcl
-				if {[get_property TOP [current_fileset]] eq ""} {
-					set_property TOP [lindex [find_top] 0] [current_fileset]
-				}
-			EOT
-		else
-			cat >> test_${1}.tcl <<- EOT
-				read_verilog $(basename ${path})
-				set_property TOP [lindex [find_top] 0] [current_fileset]
-			EOT
+		if [ "${path##*.}" == "gz" ]; then
+			gunzip -f -k ${path}
 		fi
 		cat >> test_${1}.tcl <<- EOT
+			if {[file exists "$(dirname ${path})/${ip}_vivado.tcl"] == 1} {
+				source ${ip}_vivado.tcl
+			} else {
+				read_verilog $(basename ${path%.gz})
+			}
+			if {[file exists "$(dirname ${path})/${ip}.top"] == 1} {
+				set fp [open $(dirname ${path})/${ip}.top]
+				set_property TOP [string trim [read \$fp]] [current_fileset]
+			} else {
+				set_property TOP [lindex [find_top] 0] [current_fileset]
+			}
 			cd ${PWD}
 			read_xdc test_${1}.xdc
-			synth_design -part ${xl_device} -mode out_of_context
+			synth_design -part ${xl_device} -mode out_of_context ${SYNTH_DESIGN_OPTS}
 			opt_design -directive Explore
 		EOT
 
@@ -86,7 +89,7 @@ synth_case() {
 				then
 				    echo "read -vhdl $(basename ${path})" > ${ip}.ys
 				else
-				    echo "read -vlog2k $(basename ${path})" > ${ip}.ys
+				    echo "read_verilog $(basename ${path})" > ${ip}.ys
 				fi
 			fi
 
