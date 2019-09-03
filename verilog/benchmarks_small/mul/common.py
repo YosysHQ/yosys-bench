@@ -47,7 +47,6 @@ def gen_mul(ARange, BRange):
                                       'A' in E, 'B' in E, 'P' in E,     # CE[ABP]
                                       ), file=f)
                     if A != B:
-    
                         with open("mul_%s_%s_%s_%s.v" % (B,A,R,E), "w") as f:
                             print(rtl_mul('mul_%s_%s_%s_%s' % (B,A,R,E),    # name
                                           B.rstrip('s'), A.rstrip('s'),     # [AB]W
