@@ -34,10 +34,10 @@ def powerset(iterable):
     s = list(iterable)
     return chain.from_iterable(combinations(s, r) for r in range(len(s)+1))
 
-def gen_mul(ARange, BRange):
-    for A in ARange:
-        for B in BRange:
-            for R in map(lambda i:''.join(i), powerset("ABP")): # Register existence
+def gen_mul(aRange, bRange, reg="ABP"):
+    for A in aRange:
+        for B in bRange:
+            for R in map(lambda i:''.join(i), powerset(reg)): # Register existence
                 for E in map(lambda i:''.join(i), powerset("")): # Enable
                     with open("mul_%s_%s_%s_%s.v" % (A,B,R,E), "w") as f:
                         print(rtl_mul('mul_%s_%s_%s_%s' % (A,B,R,E),    # name
