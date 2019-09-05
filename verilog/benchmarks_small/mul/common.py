@@ -44,7 +44,7 @@ def gen_mul(aRange, bRange, reg="ABP"):
     for A in aRange:
         for B in bRange:
             for R in map(lambda i:''.join(i), powerset(reg)): # Register existence
-                for E in map(lambda i:''.join(i), powerset("")): # Enable
+                for E in map(lambda i:''.join(i), powerset(R)): # Enable
                     with open("mul_%s_%s_%s_%s.v" % (A,B,R,E), "w") as f:
                         print(rtl_mul('mul_%s_%s_%s_%s' % (A,B,R,E),            # name
                                       A.rstrip('s'), B.rstrip('s'),             # [AB]W
