@@ -58,5 +58,5 @@ def gen_mul(aRange, bRange, reg="ABP"):
                                           B.rstrip('s'), A.rstrip('s'),             # [AB]W
                                           'B' in R, 'A' in R, 'M' in R, 'P' in R,   # [ABMP]REG
                                           's' in B, 's' in A,                       # [AB]_signed
-                                          'B' in E, 'A' in E, 'M' in E, 'P' in E,   # CE[ABP]
+                                          'B' in E, 'A' in E, 'M' in E, 'P' in E,   # CE[ABMP]
                                           ), file=f)
