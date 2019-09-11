@@ -2,7 +2,7 @@ module  fastfir_dynamictaps(i_clk, i_reset, i_tap_wr, i_tap, i_ce, i_sample, o_r
 `ifdef	FORMAL
 	parameter		NTAPS=16, IW=9, TW=IW, OW=2*IW+5;
 `else
-	parameter		NTAPS=/*128*/16, IW=12, TW=IW, OW=2*IW+7;
+	parameter		NTAPS=128, IW=12, TW=IW, OW=2*IW+7;
 `endif
 	parameter [0:0]		FIXED_TAPS=0;
 	input	wire			i_clk, i_reset;
