@@ -40,8 +40,8 @@ def powerset(iterable):
 def gen_macc(aRange, bRange, reg="AB"):
     for A in aRange:
         for B in bRange:
-            for R in map(lambda i:''.join(i), powerset(reg)): # Register existence
-                for E in map(lambda i:''.join(i), powerset(R+'P')): # Enable
+            for R in map(lambda i:''.join(i), powerset(reg.replace('P',''))): # Register existence
+                for E in map(lambda i:''.join(i), powerset(R + 'P' if 'P' in reg else '')): # Enable
                     with open("macc_%s_%s_%s_%s.v" % (A,B,R,E), "w") as f:
                         print(rtl_macc('macc_%s_%s_%s_%s' % (A,B,R,E),          # name
                                       A.rstrip('s'), B.rstrip('s'),             # [AB]W
